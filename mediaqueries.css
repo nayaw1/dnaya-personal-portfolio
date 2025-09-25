@@ -1,0 +1,12 @@
+@media screen and (max-width: 1200px) {
+    /*Whenever the screen size is lower than 1200px then it will result in the desktop nav disappearing */
+    #desktopNav {
+        display: none;
+    }
+    /*The mobile nav will be displayed */
+    #hamburgerNav {
+        display: flex;
+        background-color: #111D41;
+    }
+    
+}

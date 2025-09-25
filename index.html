@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNAYA WILSON | DIGITAL DESIGNER</title>
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mediaqueries.css">
+</head>
+
+<body>
+    <nav id="desktopNav">
+        <div class="logo">DNAYA WILSON.</div>
+        <div>
+            <ul class="navLinks">
+                <li><a href="#about">about</a></li>
+                <li><a href="#portfolio">portfolio</a></li>
+                <li><a href="#contact">contact</a></li>
+
+                <div id="socialsContainer">
+                    <img src="./assets/linkedin.png" class="icons" alt="Linkedin" onclick="location.href='https://www.linkedin.com/in/dnayawilson'">
+                    <img src="./assets/github.png" class="icons" alt="Github" onclick="location.href='https://www.github.com/nayaw1'">
+                </div>
+
+                <div class="btnContainer">
+                    <button class="btnColor2" onclick="window.open('./assets/resume-example.pdf')">Download CV</button>
+                    <button class="btnColor1" onclick="location.href='./#contact' ">Location</button>
+                </div>
+            </ul>
+        </div>
+    </nav>
+    <nav id="hamburgerNav">
+        <div class="logo">DNAYA WILSON.</div>
+        <div class="hamburgerMenu">
+            <div class="hamburgerIcon" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+
+            <li><a href="#about" onclick="toggleMenu()">about</a></li>
+                <li><a href="#portfolio" onclick="toggleMenu()">portfolio</a></li>
+                <li><a href="#contact" onclick="toggleMenu()">contact</a></li>
+            </div>
+        </div>
+    </nav>
+    <section id="profile">
+        <div class="sectionText">
+            <h1 class="sectionTitle1">developer</Coder></h1>
+            <p class="sectionP1">Code that clicks.</p>
+        </div>
+        <div class="pictureContainer">
+            <img src="/assets/profile-pic.png" alt="Dnaya Wilson Profile Picture">
+        </div>
+        <div class="sectionText">
+            <h1 class="sectionTitle2">designer</h1>
+            <p class="sectionP2">Designs that captivate.</p>
+        </div>
+    </section>
+    <script src="script.js"></script>
+</body>
+
+</html>

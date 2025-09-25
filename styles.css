@@ -1,0 +1,232 @@
+/*General*/
+
+/*Google Font import for poppins font*/
+@import url('https://fonts.googleapis.com/css2?family=Kolker+Brush&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+    /*Styles for the whole page elements*/
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    /*Styles for the body tags elements*/
+    font-family: "Poppins", sans-serif;
+}
+
+html {
+    /*Styles for the html tags elements*/
+    scroll-behavior: smooth;
+}
+
+p {
+    /*Styles for the paragraph tags elements*/
+    color: rgb(85, 85, 85);
+}
+
+/*TRANSITION*/
+
+a,
+.btn {
+    /*Styles for the whole page*/
+    transition: all 300ms ease;
+}
+
+/*DESKTOP NAV*/
+
+nav,
+.navLinks {
+    display: flex;
+}
+
+nav {
+    justify-content: space-around;
+    align-items: center;
+    height: 12vh;
+    background-color: #1C2541;
+}
+
+.navLinks {
+    gap: 2rem;
+    list-style: none;
+    font-size: 1.5rem;
+}
+
+a {
+    text-decoration: none;
+    text-decoration-color: white;
+    color: white;
+}
+
+a:hover {
+    text-decoration: underline;
+    text-decoration-color: #6081A9;
+    text-underline-offset: .5rem;
+    color: #6081A9;
+}
+
+.logo {
+    font-size: 2rem;
+    color: white;
+}
+
+.logo:hover {
+    cursor: default;
+}
+
+/*HAMBURGER MENU*/
+
+#hamburgerNav {
+    display: none;
+}
+
+.hamburgerMenu {
+    position: relative;
+    display: inline-block;
+}
+
+.hamburgerIcon {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 24px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.hamburgerIcon span {
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    transition: all 0.3s ease-in-out;
+}
+
+.menuLinks {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    width: fit-content;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.menuLinks a {
+    display: block;
+    padding: 10px;
+    text-align: center;
+    font-size: 1.5rem;
+    color: black;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.menuLinks li {
+    list-style: none;
+}
+
+.menuLinks.open {
+    max-height: 300px;
+}
+
+/*Functionality for each of the three hamburger lines for mobile nav when clicked*/
+.hamburgerIcon.open span:first-child {
+    /*Transforms the first hamburger line to an X (right side line of x)and moves it slighty because the rotation skews the position*/
+    transform: rotate(45deg) translate(10px, 5px);
+}
+
+.hamburgerIcon.open span:nth-child(2) {
+    /*Get rids of the second line completely*/
+    opacity: 0;
+}
+
+.hamburgerIcon.open span:last-child {
+    /*transform the third hamburger line to an X (left side line of x)and moves it in the opposite direction of the first line slighty because the rotation skews the position*/
+    transform: rotate(-45deg) translate(10px, -5px);
+}
+
+
+.hamburgerIcon span:first-child {
+    transform: none;
+}
+
+.hamburgerIcon span:first-child {
+    opacity: 1;
+}
+
+.hamburgerIcon span:first-child {
+    transform: none;
+}
+
+/*Picture Conatiner STYLES*/
+
+.pictureContainer {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: bottom;
+    /*background: red;*/
+}
+
+/*SECTION STYLES*/
+
+section{
+    padding-top: 4vh;
+    height: 96vh;
+    margin: 0 10rem;
+    box-sizing: border-box;
+    min-height: fit-content;
+}
+
+.pictureContainer{
+    display: flex;
+}
+
+#profile{
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+    height: 80vh;
+}
+
+.pictureContainer{
+    display: flex;
+    height: 400px;
+    width: 400px;
+    margin: auto 0;
+}
+
+.sectionText{
+    align-self: center;
+    text-align: center;
+}
+
+.sectionP1, .sectionP2{
+    font-weight: 600;
+    text-align: center;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.sectionTitle1, .sectionTitle2{
+    font-size: 5.4rem;
+    text-align: center;
+}
+
+.socialsContainer{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/*ICONS STYLES*/
+
+.icons{
+    cursor: pointer;
+    height: 2rem;
+}
