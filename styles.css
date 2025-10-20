@@ -1,31 +1,172 @@
-/*General*/
+/************* IMPORTS *************/
+@import url('https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Jersey+10&display=swap');
 
-/*Google Font import for poppins font*/
-@import url('https://fonts.googleapis.com/css2?family=Kolker+Brush&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-* {
-    /*Styles for the whole page elements*/
-    margin: 0px;
-    padding: 0px;
+/************* MOBILE CONTROLS GAMING STYLES *************/
+#controls {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10000;
+    display: none;
+    /* shown only on touch devices via JS */
 }
 
-body {
-    /*Styles for the body tags elements*/
-    font-family: "Poppins", sans-serif;
+.joystick {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    width: 140px;
+    height: 140px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    pointer-events: auto;
+    touch-action: none;
 }
 
-html {
-    /*Styles for the html tags elements*/
-    scroll-behavior: smooth;
+.joystick .stick {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 70px;
+    height: 70px;
+    transform: translate(-50%, -50%);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-p {
-    /*Styles for the paragraph tags elements*/
-    color: rgb(85, 85, 85);
+#rightButtons {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    display: grid;
+    gap: 12px;
+    pointer-events: auto;
 }
 
-/*TRANSITION*/
+.ctrlBtn {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font: 600 14px/1 system-ui;
+    display: grid;
+    place-items: center;
+    user-select: none;
+    touch-action: none;
+}
 
+.ctrlBtn:active {
+    transform: scale(0.98);
+}
+
+/************* LOADING SCREEN STYLES *************/
+#preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.05), transparent 60%), #0b1020;
+    color: #eaf1ff;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    transition: opacity .6s ease, visibility .6s ease;
+  }
+  #preloader.hidden { opacity: 0; visibility: hidden; }
+
+  .preloader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    text-align: center;
+  }
+
+  /* --- Battery --- */
+  .battery { 
+    position: relative;
+    width: clamp(240px, 45vmin, 440px);
+    height: clamp(100px, 18vmin, 160px);
+    border-radius: 12px;
+    background: linear-gradient(180deg, #b4b9c4 0%, #5f6677 100%);
+    box-shadow:
+      0 4px 10px rgba(0,0,0,0.5),
+      inset 0 2px 4px rgba(255,255,255,0.3),
+      inset 0 -2px 4px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .battery-tip {
+    position: absolute;
+    right: -22px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 35%;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #b4b9c4 0%, #5f6677 100%);
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.4),
+      inset 0 1px 2px rgba(255,255,255,0.3);
+  }
+
+  .battery-inner {
+    position: relative;
+    width: 92%;
+    height: 75%;
+    border-radius: 8px;
+    background: #101420;
+    overflow: hidden;
+    box-shadow: inset 0 0 6px rgba(255,255,255,0.2), inset 0 0 20px rgba(0,0,0,0.8);
+  }
+
+  .battery-fill {
+    --progress: 0;
+    position: absolute;
+    inset: 0;
+    width: calc(var(--progress) * 1%);
+    background: linear-gradient(90deg, #16ff75, #27c4ff 60%, #7d8cff);
+    background-size: 200% 100%;
+    filter: brightness(1.1);
+    border-radius: 8px 0 0 8px;
+    transition: width .4s ease;
+  }
+
+  .battery-gloss {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0) 40%);
+    pointer-events: none;
+  }
+
+  .battery-reflection {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(115deg, rgba(255,255,255,0.12) 20%, rgba(255,255,255,0) 40%);
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  /* --- Label --- */
+  .label {
+    font-size: clamp(16px, 3vmin, 24px);
+    font-weight: 600;
+    letter-spacing: 0.4px;
+  }
+
+
+/************* DESKTOP NAV STYLES *************/
 a,
 .btn {
     /*Styles for the whole page*/
@@ -33,7 +174,6 @@ a,
 }
 
 /*DESKTOP NAV*/
-
 nav,
 .navLinks {
     display: flex;
@@ -42,8 +182,10 @@ nav,
 nav {
     justify-content: space-around;
     align-items: center;
-    height: 12vh;
-    background-color: #1C2541;
+    height: 6vh;
+    font-family: "Jersey 10", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .navLinks {
@@ -62,7 +204,7 @@ a:hover {
     text-decoration: underline;
     text-decoration-color: #6081A9;
     text-underline-offset: .5rem;
-    color: #6081A9;
+    color: rgb(0, 66, 128);
 }
 
 .logo {
@@ -74,106 +216,47 @@ a:hover {
     cursor: default;
 }
 
-/*HAMBURGER MENU*/
-
-#hamburgerNav {
-    display: none;
+/************* GENERAL STYLES *************/
+* {
+    /*Styles for the whole page elements*/
+    margin: 0px;
+    padding: 0px;
 }
 
-.hamburgerMenu {
-    position: relative;
-    display: inline-block;
+p {
+    /*Styles for the paragraph tags elements*/
+    color: rgb(85, 85, 85);
 }
 
-.hamburgerIcon {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 24px;
-    width: 30px;
-    cursor: pointer;
+:root {
+    --text: #e5e7eb;
+    --bg: #0b0f18;
+    --accent: #0E5CF2;
+
+    background-image: url("/assets/RealMe.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
-.hamburgerIcon span {
-    width: 100%;
-    height: 2px;
-    background-color: white;
-    transition: all 0.3s ease-in-out;
+html, body {
+    font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: var(--text);
+
+     /*Styles for the html tags elements*/
+     scroll-behavior: smooth;
 }
 
-.menuLinks {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: white;
-    width: fit-content;
-    max-height: 0;
-    overflow: hidden;
-    transition: all 0.3s ease-in-out;
+h1,h2,h3 {
+    line-height: 1.2;
+    letter-spacing: 0.2px;
 }
 
-.menuLinks a {
-    display: block;
-    padding: 10px;
-    text-align: center;
-    font-size: 1.5rem;
-    color: black;
-    text-decoration: none;
-    transition: all 0.3s ease-in-out;
+button {
+    font-weight: 600;
 }
 
-.menuLinks li {
-    list-style: none;
-}
-
-.menuLinks.open {
-    max-height: 300px;
-}
-
-/*Functionality for each of the three hamburger lines for mobile nav when clicked*/
-.hamburgerIcon.open span:first-child {
-    /*Transforms the first hamburger line to an X (right side line of x)and moves it slighty because the rotation skews the position*/
-    transform: rotate(45deg) translate(10px, 5px);
-}
-
-.hamburgerIcon.open span:nth-child(2) {
-    /*Get rids of the second line completely*/
-    opacity: 0;
-}
-
-.hamburgerIcon.open span:last-child {
-    /*transform the third hamburger line to an X (left side line of x)and moves it in the opposite direction of the first line slighty because the rotation skews the position*/
-    transform: rotate(-45deg) translate(10px, -5px);
-}
-
-
-.hamburgerIcon span:first-child {
-    transform: none;
-}
-
-.hamburgerIcon span:first-child {
-    opacity: 1;
-}
-
-.hamburgerIcon span:first-child {
-    transform: none;
-}
-
-/*Picture Conatiner STYLES*/
-
-.pictureContainer {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: 0;
-    font-size: 100%;
-    vertical-align: bottom;
-    /*background: red;*/
-}
-
-/*SECTION STYLES*/
-
-section{
+/************* MAIN SECTION STYLES *************/
+section {
     padding-top: 4vh;
     height: 96vh;
     margin: 0 10rem;
@@ -181,30 +264,20 @@ section{
     min-height: fit-content;
 }
 
-.pictureContainer{
-    display: flex;
-}
-
-#profile{
+#profile {
     display: flex;
     justify-content: center;
     gap: 5rem;
     height: 80vh;
 }
 
-.pictureContainer{
-    display: flex;
-    height: 400px;
-    width: 400px;
-    margin: auto 0;
-}
-
-.sectionText{
+.sectionText {
     align-self: center;
     text-align: center;
 }
 
-.sectionP1, .sectionP2{
+.sectionP1,
+.sectionP2 {
     font-weight: 600;
     text-align: center;
     font-size: 1.75rem;
@@ -212,21 +285,16 @@ section{
     line-height: 1.5;
 }
 
-.sectionTitle1, .sectionTitle2{
+.sectionTitle1,
+.sectionTitle2 {
     font-size: 5.4rem;
     text-align: center;
 }
 
-.socialsContainer{
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-/*ICONS STYLES*/
-
-.icons{
-    cursor: pointer;
-    height: 2rem;
+/************* GAMING STYLES *************/
+#gameCanvas {
+    position: fixed;
+    inset: 0;
+    display: none;
+    background: #000;
 }

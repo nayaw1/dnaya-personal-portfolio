@@ -1,66 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DNAYA WILSON | DIGITAL DESIGNER</title>
-    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="mediaqueries.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DNAYA WILSON | DIGITAL DESIGNER</title>
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="mobilestyles.css"/>
+  <link rel="stylesheet" href="mediaqueries.css"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    #gameToggle { cursor: pointer; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; background: #fff; }
+    #gameLayer {
+      position: fixed; inset: 0; display: none;
+      background: radial-gradient(1200px 800px at 50% 50%, #0b0f18 0%, #020409 60%, #000 100%);
+      z-index: 9999;
+    }
+    #gameCanvas { width: 100%; height: 100%; display: block; }
+    #exitBtn {
+      position: absolute; top: 16px; right: 16px; z-index: 10000;
+      padding: 10px 12px; border-radius: 8px; border: 1px solid #4a5568; background: #111827; color: #f9fafb; cursor: pointer;
+    }
+    /* Optional mobile controls (hidden by default) */
+    #controls { position: absolute; inset: 0; pointer-events: none; z-index: 10000; display: none; }
+    .joystick {
+      position: absolute; left: 24px; bottom: 24px; width: 140px; height: 140px;
+      border-radius: 999px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      pointer-events: auto; touch-action: none;
+    }
+    .joystick .stick {
+      position: absolute; left: 50%; top: 50%; width: 70px; height: 70px; transform: translate(-50%,-50%);
+      border-radius: 999px; background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.3);
+    }
+    #rightButtons { position: absolute; right: 24px; bottom: 24px; display: grid; gap: 12px; pointer-events: auto; }
+    .ctrlBtn {
+      width: 72px; height: 72px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.12); color: #fff; font: 600 14px/1 system-ui; display: grid; place-items: center;
+      user-select: none; touch-action: none;
+    }
+    .ctrlBtn:active { transform: scale(0.98); }
+    @media (prefers-reduced-motion: reduce) { .anim { animation: none !important; } }
+  </style>
 </head>
 
 <body>
-    <nav id="desktopNav">
-        <div class="logo">DNAYA WILSON.</div>
-        <div>
-            <ul class="navLinks">
-                <li><a href="#about">about</a></li>
-                <li><a href="#portfolio">portfolio</a></li>
-                <li><a href="#contact">contact</a></li>
-
-                <div id="socialsContainer">
-                    <img src="./assets/linkedin.png" class="icons" alt="Linkedin" onclick="location.href='https://www.linkedin.com/in/dnayawilson'">
-                    <img src="./assets/github.png" class="icons" alt="Github" onclick="location.href='https://www.github.com/nayaw1'">
-                </div>
-
-                <div class="btnContainer">
-                    <button class="btnColor2" onclick="window.open('./assets/resume-example.pdf')">Download CV</button>
-                    <button class="btnColor1" onclick="location.href='./#contact' ">Location</button>
-                </div>
-            </ul>
+  <!-- LOADING SCREEN -->
+  <div id="preloader" aria-live="polite">
+    <div class="preloader-content">
+      <div class="battery">
+        <div class="battery-tip"></div>
+        <div class="battery-inner">
+          <div class="battery-fill"></div>
+          <div class="battery-gloss"></div>
         </div>
-    </nav>
-    <nav id="hamburgerNav">
-        <div class="logo">DNAYA WILSON.</div>
-        <div class="hamburgerMenu">
-            <div class="hamburgerIcon" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+        <div class="battery-reflection"></div>
+      </div>
+      <div class="label">
+        Social Battery Loading<span id="dots">...</span><span id="percent">0%</span>
+      </div>
+    </div>
+  </div>
 
+  <!-- NAVIGATION MENUS-->
+  <nav id="desktopNav">
+    <div class="logo">DNAYA WILSON.</div>
+    <div>
+      <ul class="navLinks">
+        <li><a href="#about">ABOUT</a></li>
+        <li><a href="#portfolio">DUALITY DEPLOYMENTS</a></li>
+        <li><a href="#contact">CONTACT</a></li>
 
-            <li><a href="#about" onclick="toggleMenu()">about</a></li>
-                <li><a href="#portfolio" onclick="toggleMenu()">portfolio</a></li>
-                <li><a href="#contact" onclick="toggleMenu()">contact</a></li>
-            </div>
-        </div>
-    </nav>
+          <!-- GAMING BUTTON -->
+      <div class="btnContainer">
+        <button id="gameToggle" aria-pressed="false" aria-controls="gameLayer">Developer Lens</button>
+      </div>
+      </ul>
+    </div>
+  </nav>
+
+  <nav id="hamburgerNav">
+    <div class="logo">DNAYA WILSON.</div>
+    <div class="hamburgerMenu">
+      <div class="hamburgerIcon" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+      <li><a href="#about" onclick="toggleMenu()">ABOUT</a></li>
+      <li><a href="#portfolio" onclick="toggleMenu()">DUALITY DEPLOYMENTS</a></li>
+      <li><a href="#contact" onclick="toggleMenu()">CONTACT</a></li>
+    </div>
+  </nav>
+
+  <!-- MAIN SECTION 
+  <div id="website-content" style="display:none">
     <section id="profile">
-        <div class="sectionText">
-            <h1 class="sectionTitle1">developer</Coder></h1>
-            <p class="sectionP1">Code that clicks.</p>
-        </div>
-        <div class="pictureContainer">
-            <img src="/assets/profile-pic.png" alt="Dnaya Wilson Profile Picture">
-        </div>
-        <div class="sectionText">
-            <h1 class="sectionTitle2">designer</h1>
-            <p class="sectionP2">Designs that captivate.</p>
-        </div>
+      <div class="sectionText">
+        <h1 class="sectionTitle1">developer</Coder></h1>
+        <p class="sectionP1">code that clicks.</p>
+      </div>
+      <div class="sectionText">
+        <h1 class="sectionTitle2">designer</h1>
+        <p class="sectionP2">designs that captivate.</p>
+      </div>
     </section>
-    <script src="script.js"></script>
-</body>
+  </div>-->
 
+  <!-- GAME OVERLAY -->
+  <div id="gameLayer" role="dialog" aria-modal="true" aria-label="Game Mode">
+    <button id="exitBtn">Exit Game</button>
+
+    <div id="controls" aria-hidden="true">
+      <div id="leftJoy" class="joystick" aria-label="Steering joystick"><div class="stick"></div></div>
+      <div id="rightButtons">
+        <button id="btnBoost" class="ctrlBtn" aria-label="Boost">Boost</button>
+        <button id="btnBrake" class="ctrlBtn" aria-label="Brake">Brake</button>
+      </div>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+  </div>
+
+  <!-- SCRIPT -->
+  <script src="script.js"></script>
+
+  <!-- IMPORT MAP FOR: 'three' -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+
+  <!-- SCRIPT #2 -->
+  <script type="module" src="game.js"></script>
+</body>
 </html>
