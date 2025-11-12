@@ -12,7 +12,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
   <style>
-    #gameToggle { cursor: pointer; padding: 10px 14px; border: 1px solid #ccc; border-radius: 8px; background: #fff; }
     #gameLayer {
       position: fixed; inset: 0; display: none;
       background: radial-gradient(1200px 800px at 50% 50%, #0b0f18 0%, #020409 60%, #000 100%);
@@ -58,7 +57,7 @@
         <div class="battery-reflection"></div>
       </div>
       <div class="label">
-        Social Battery Loading<span id="dots">...</span><span id="percent">0%</span>
+        Social Battery loading<span id="dots">...</span><span id="percent">0%</span>
       </div>
     </div>
   </div>
@@ -134,5 +133,143 @@
 
   <!-- SCRIPT #2 -->
   <script type="module" src="game.js"></script>
+
+  <!-- SCRIPT #3-->
+  <script>
+    // Terminal Typing Effect & Game Loading
+    (function() {
+      const btn = document.getElementById('gameToggle');
+      const gameLayer = document.getElementById('gameLayer');
+      const exitBtn = document.getElementById('exitBtn');
+      let isTyping = false;
+      let gameActive = false;
+      
+      // Create particle canvas
+      const canvas = document.createElement('canvas');
+      canvas.id = 'particleCanvas';
+      canvas.width = 200;
+      canvas.height = 50;
+      btn.appendChild(canvas);
+      
+      const ctx = canvas.getContext('2d');
+      const particles = [];
+      
+      // Particle class
+      class Particle {
+        constructor() {
+          this.reset();
+        }
+        
+        reset() {
+          this.x = Math.random() * canvas.width;
+          this.y = canvas.height + 5;
+          this.vx = (Math.random() - 0.5) * 0.5;
+          this.vy = -Math.random() * 2 - 1;
+          this.life = 1;
+          this.decay = Math.random() * 0.02 + 0.01;
+        }
+        
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.life -= this.decay;
+          
+          if (this.life <= 0) this.reset();
+        }
+        
+        draw() {
+          ctx.save();
+          ctx.globalAlpha = this.life * 0.8;
+          ctx.fillStyle = '#00ff41';
+          ctx.fillRect(this.x, this.y, 1, 1);
+          ctx.restore();
+        }
+      }
+      
+      // Initialize particles
+      for (let i = 0; i < 15; i++) {
+        particles.push(new Particle());
+      }
+      
+      // Animate particles
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(animateParticles);
+      }
+      animateParticles();
+      
+      // Terminal typing effect
+      function typeText(text, callback) {
+        if (isTyping) return;
+        isTyping = true;
+        
+        let i = 0;
+        btn.innerHTML = '';
+        
+        function type() {
+          if (i < text.length) {
+            btn.innerHTML = text.slice(0, i + 1) + '<span class="cursor">_</span>';
+            i++;
+            setTimeout(type, 80);
+          } else {
+            btn.innerHTML = text;
+            isTyping = false;
+            if (callback) callback();
+          }
+        }
+        type();
+      }
+      
+      // Button click handler
+btn.addEventListener('click', () => {
+  if (!gameActive) {
+    typeText('DEV MODE: ON', () => {
+      setTimeout(() => {
+        gameActive = true;
+        gameLayer.style.display = 'block';
+        // Start the game
+        if (window.startGame) {
+          window.startGame();
+        }
+      }, 1000);
+    });
+  }
+});
+
+      
+      // Exit game function
+      function exitGame() {
+        gameActive = false;
+        gameLayer.style.display = 'none';
+        typeText('DEV MODE: OFF');
+      }
+      
+      // Exit button handler
+      exitBtn.addEventListener('click', exitGame);
+      
+      // ESC key handler
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && gameActive) {
+          exitGame();
+        }
+      });
+      
+      // Initialize with typing effect
+      setTimeout(() => typeText('DEV MODE: OFF'), 500);
+      
+      // Retype on hover
+      btn.addEventListener('mouseenter', () => {
+        if (!isTyping && !gameActive) {
+          typeText('DEV MODE: OFF');
+        }
+      });
+    })();
+    </script>        
+    
+
 </body>
 </html>
