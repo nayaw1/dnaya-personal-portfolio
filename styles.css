@@ -305,22 +305,26 @@ p {
 }
 
 :root {
-    --text: #e5e7eb;
-    --bg: #0b0f18;
-    --accent: #0E5CF2;
-
-    background-image: url("/assets/RealMe.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
+  --text: #e5e7eb;
+  --bg: #0b0f18;
+  --accent: #0E5CF2;
 }
 
 html, body {
-    font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    color: var(--text);
-
-     /*Styles for the html tags elements*/
-     scroll-behavior: smooth;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  scroll-behavior: smooth;
+  
+  /* Background properties */
+  background-image: url("/assets/DnayaInPastel2.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  width: 100%;
 }
+
 
 h1,h2,h3 {
     line-height: 1.2;
@@ -332,40 +336,123 @@ button {
 }
 
 /************* MAIN SECTION STYLES *************/
-section {
-    padding-top: 4vh;
-    height: 96vh;
-    margin: 0 10rem;
-    box-sizing: border-box;
-    min-height: fit-content;
+/* Replace the problematic styles in your styles.css */
+.sectionTitle1,
+.sectionTitle2 {
+    font-size: 5.4rem;
+    font-family: "Doto", monospace;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #00ff41, #0E5CF2, #ff0080);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+    transform: none;
 }
 
-#profile {
-    display: flex;
-    justify-content: center;
-    gap: 5rem;
-    height: 80vh;
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
 
-.sectionText {
-    align-self: center;
-    text-align: center;
-}
 
 .sectionP1,
 .sectionP2 {
     font-weight: 600;
-    text-align: center;
     font-size: 1.75rem;
     margin-bottom: 1rem;
     line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+    font-family: "Inter", sans-serif;
 }
 
-.sectionTitle1,
-.sectionTitle2 {
-    font-size: 5.4rem;
-    text-align: center;
+section {
+  padding-top: 4vh;
+  height: 60vh;
+  margin: 0 10rem;
+  box-sizing: border-box;
+  min-height: fit-content;
 }
+
+#profile {
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  height: 90vh;
+}
+
+.sectionText {
+  align-self: center;
+  text-align: center;
+}
+
+.sectionText:last-child {
+  transform: translateX(200px);
+}
+
+.sectionText:first-child {
+  transform: translateX(-400px);
+}
+
+
+.sectionP1 button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background: #0E5CF2;
+  color: white;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.sectionP1 button:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
+  transform: translateY(-1px);
+}
+
+.sectionP1 button:active {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  transform: translateY(0);
+}
+
+
+/* Add glitch effect for extra tech vibes */
+.sectionTitle1:hover,
+.sectionTitle2:hover {
+    animation: glitch 0.3s ease-in-out;
+}
+
+@keyframes glitch {
+    0% { transform: translateX(-200px) skew(0deg); }
+    20% { transform: translateX(-200px) skew(-2deg); }
+    40% { transform: translateX(-200px) skew(2deg); }
+    60% { transform: translateX(-200px) skew(-1deg); }
+    80% { transform: translateX(-200px) skew(1deg); }
+    100% { transform: translateX(-200px) skew(0deg); }
+}
+
+.sectionTitle2:hover {
+    animation: glitch-right 0.3s ease-in-out;
+}
+
+@keyframes glitch-right {
+    0% { transform: translateX(200px) skew(0deg); }
+    20% { transform: translateX(200px) skew(-2deg); }
+    40% { transform: translateX(200px) skew(2deg); }
+    60% { transform: translateX(200px) skew(-1deg); }
+    80% { transform: translateX(200px) skew(1deg); }
+    100% { transform: translateX(200px) skew(0deg); }
+}
+
 
 /************* GAMING STYLES *************/
 #gameCanvas {
