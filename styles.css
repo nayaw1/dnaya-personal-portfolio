@@ -1,68 +1,6 @@
 /************* IMPORTS *************/
 @import url('https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Jersey+10&display=swap');
 
-/************* MOBILE CONTROLS GAMING STYLES *************/
-#controls {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 10000;
-    display: none;
-    /* shown only on touch devices via JS */
-}
-
-.joystick {
-    position: absolute;
-    left: 24px;
-    bottom: 24px;
-    width: 140px;
-    height: 140px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    pointer-events: auto;
-    touch-action: none;
-}
-
-.joystick .stick {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 70px;
-    height: 70px;
-    transform: translate(-50%, -50%);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-#rightButtons {
-    position: absolute;
-    right: 24px;
-    bottom: 24px;
-    display: grid;
-    gap: 12px;
-    pointer-events: auto;
-}
-
-.ctrlBtn {
-    width: 72px;
-    height: 72px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.12);
-    color: #fff;
-    font: 600 14px/1 system-ui;
-    display: grid;
-    place-items: center;
-    user-select: none;
-    touch-action: none;
-}
-
-.ctrlBtn:active {
-    transform: scale(0.98);
-}
-
 /************* LOADING SCREEN STYLES *************/
 #preloader {
     position: fixed;
@@ -307,13 +245,13 @@ p {
 :root {
   --text: #e5e7eb;
   --bg: #0b0f18;
-  --accent: #0E5CF2;
 }
 
 html, body {
   font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   color: var(--text);
   scroll-behavior: smooth;
+  overflow: hidden;
   
   /* Background properties */
   background-image: url("/assets/DnayaInPastel2.png");
@@ -336,7 +274,6 @@ button {
 }
 
 /************* MAIN SECTION STYLES *************/
-/* Replace the problematic styles in your styles.css */
 .sectionTitle1,
 .sectionTitle2 {
     font-size: 5.4rem;
@@ -392,13 +329,12 @@ section {
 }
 
 .sectionText:last-child {
-  transform: translateX(200px);
+  transform: translateX(12vw) !important;
 }
 
 .sectionText:first-child {
-  transform: translateX(-400px);
+  transform: translateX(-12vw) !important;
 }
-
 
 .sectionP1 button {
   padding: 8px 16px;
@@ -424,20 +360,19 @@ section {
   transform: translateY(0);
 }
 
-
-/* Add glitch effect for extra tech vibes */
+/************* GLITCH EFFECT STYLES *************/
 .sectionTitle1:hover,
 .sectionTitle2:hover {
     animation: glitch 0.3s ease-in-out;
 }
 
 @keyframes glitch {
-    0% { transform: translateX(-200px) skew(0deg); }
-    20% { transform: translateX(-200px) skew(-2deg); }
-    40% { transform: translateX(-200px) skew(2deg); }
-    60% { transform: translateX(-200px) skew(-1deg); }
-    80% { transform: translateX(-200px) skew(1deg); }
-    100% { transform: translateX(-200px) skew(0deg); }
+  0% { transform: translateX(-12vw) skew(0deg); }
+  20% { transform: translateX(-12vw) skew(-2deg); }
+  40% { transform: translateX(-12vw) skew(2deg); }
+  60% { transform: translateX(-12vw) skew(-1deg); }
+  80% { transform: translateX(-12vw) skew(1deg); }
+  100% { transform: translateX(-12vw) skew(0deg); }
 }
 
 .sectionTitle2:hover {
@@ -445,14 +380,13 @@ section {
 }
 
 @keyframes glitch-right {
-    0% { transform: translateX(200px) skew(0deg); }
-    20% { transform: translateX(200px) skew(-2deg); }
-    40% { transform: translateX(200px) skew(2deg); }
-    60% { transform: translateX(200px) skew(-1deg); }
-    80% { transform: translateX(200px) skew(1deg); }
-    100% { transform: translateX(200px) skew(0deg); }
+    0% { transform: translateX(12vw) skew(0deg); }
+    20% { transform: translateX(12vw) skew(-2deg); }
+    40% { transform: translateX(12vw) skew(2deg); }
+    60% { transform: translateX(12vw) skew(-1deg); }
+    80% { transform: translateX(12vw) skew(1deg); }
+    100% { transform: translateX(12vw) skew(0deg); }
 }
-
 
 /************* GAMING STYLES *************/
 #gameCanvas {
@@ -461,3 +395,10 @@ section {
     display: none;
     background: #000;
 }
+
+
+/************* MOBILE STYLES *************/
+#mobileProfile {
+  display: none;
+}
+

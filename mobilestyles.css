@@ -1,12 +1,60 @@
-/************* MOBILE HAMBURGER MENU *************/
+/************* MOBILE NAV MENU *************/
 #hamburgerNav {
     display: none;
+    background-color: #0b0f18 !important;
+    padding: 10px 15px;
 }
 
 .hamburgerMenu {
     position: relative;
     display: inline-block;
 }
+
+.hamburgerMenu .menuItems {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #1a1f2e;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    display: none;
+    min-width: 150px;
+}
+
+.hamburgerMenu.open .menuItems {
+    display: block;
+}
+
+.hamburgerMenu .menuItems li {
+    display: block;
+    list-style: none;
+    border-bottom: 1px solid #eee;
+}
+
+.hamburgerMenu .menuItems li:last-child {
+    border-bottom: none;
+}
+
+.hamburgerMenu .menuItems li a {
+    display: block;
+    padding: 12px 16px;
+    color: black;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.hamburgerMenu .menuItems li a:hover {
+    background-color: #6081A9;
+    color: rgb(0, 66, 128);
+}
+
+
+.hamburgerMenu.open li a {
+    color: #e5e7eb;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
 
 .hamburgerIcon {
     display: flex;
@@ -15,6 +63,8 @@
     height: 24px;
     width: 30px;
     cursor: pointer;
+    z-index: 10;
+    margin: 8px 0px 8px 166px;
 }
 
 .hamburgerIcon span {
@@ -24,35 +74,7 @@
     transition: all 0.3s ease-in-out;
 }
 
-.menuLinks {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: white;
-    width: fit-content;
-    max-height: 0;
-    overflow: hidden;
-    transition: all 0.3s ease-in-out;
-}
-
-.menuLinks a {
-    display: block;
-    padding: 10px;
-    text-align: center;
-    font-size: 1.5rem;
-    color: black;
-    text-decoration: none;
-    transition: all 0.3s ease-in-out;
-}
-
-.menuLinks li {
-    list-style: none;
-}
-
-.menuLinks.open {
-    max-height: 300px;
-}
-
+/***********************************/
 
 /*Functionality for each of the three hamburger lines for mobile nav when clicked*/
 .hamburgerIcon.open span:first-child {
@@ -73,12 +95,176 @@
 
 .hamburgerIcon span:first-child {
     transform: none;
-}
-
-.hamburgerIcon span:first-child {
     opacity: 1;
 }
 
-.hamburgerIcon span:first-child {
-    transform: none;
+
+/************* MOBILE GENERAL STYLES *************/
+@media screen and (max-width: 768px) {
+    html, body {
+        background-image: url("/assets/PastelMe2.png") !important;
+        background-position: 68% center !important;
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+    }
+
+    #profile {
+        display: none !important;
+    }
+    
+    #mobileProfile {
+        display: block !important;
+    }
+
+    .wilson {
+        margin-left: 6px;
+    }
+
+    .mobile-header {
+        padding: 40px 50px 20px 20px;
+        padding-top: 300px;
+        text-align: right;
+        position: relative;
+        right: 40px;
+    }
+    
+    .mobile-title {
+        font-family: 'Courier New', monospace;
+        font-size: 2.3rem;
+        font-weight: bold;
+        color: #00ff41;
+        text-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+        border-right: 3px solid #00ff41;
+        animation: typing 4s steps(13) 1s both, blink 1s infinite step-end 5s;
+        overflow: hidden;
+        width: 13ch;
+        display: inline-block;
+        white-space: nowrap;
+        margin-bottom: 15px;
+        margin-right: 20px;
+        position: absolute;
+        left: 0px;
+    }
+    
+    .mobile-subtitle {
+        font-family: 'Inter', sans-serif;
+        color: #cccccc;
+        font-size: 1.3rem;
+        margin: 12px 0;
+        font-weight: 500;
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        text-align: center;
+        display: block;
+        margin: 55px 0 8px 20px;
+        white-space: nowrap;
+        font-size: 1.4rem;
+        color: #e0e0e0;
+    }
+
+    .mobile-p {
+        position: absolute;
+        white-space: nowrap;
+        left: 38px;
+        font-family: 'Inter', sans-serif;
+        color: #cccccc;
+        font-size: 1.1rem;
+        font-weight: 400;
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        white-space: nowrap;
+        margin: 8px 20px;
+    }
+    
+    .mobile-p button {
+        background: linear-gradient(135deg, #00ff41, #00cc33);
+        border: none;
+        color: #000000;
+        padding: 3px 10px;
+        border-radius: 4px;
+        font-family: 'Inter', sans-serif;
+        font-size: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .mobile-p button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+    }
+
+    /* adds typing effect to mobile-title */
+    @keyframes blink {
+        0%, 50% { border-color: transparent; }
+        51%, 100% { border-color: #00ff41; }
+    }
+
+    @keyframes typing {
+        from { width: 0; }
+        to { width: 13ch; }
+    }    
+    
+}
+
+
+/************* MOBILE GAMING STYLES *************/
+#controls {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10000;
+    display: none;
+    /* shown only on touch devices via JS */
+}
+
+.joystick {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    width: 140px;
+    height: 140px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    pointer-events: auto;
+    touch-action: none;
+}
+
+.joystick .stick {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 70px;
+    height: 70px;
+    transform: translate(-50%, -50%);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#rightButtons {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    display: grid;
+    gap: 12px;
+    pointer-events: auto;
+}
+
+.ctrlBtn {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font: 600 14px/1 system-ui;
+    display: grid;
+    place-items: center;
+    user-select: none;
+    touch-action: none;
+}
+
+.ctrlBtn:active {
+    transform: scale(0.98);
 }

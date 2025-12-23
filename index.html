@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DNAYA WILSON | DIGITAL DESIGNER</title>
   <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"/>
-  <link rel="stylesheet" href="styles.css"/>
   <link rel="stylesheet" href="mobilestyles.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+
   <link rel="stylesheet" href="mediaqueries.css"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -62,7 +63,7 @@
     </div>
   </div>
 
-  <!-- NAVIGATION MENUS-->
+  <!-- NAVIGATION SECTION-->
   <nav id="desktopNav">
     <div class="logo">DNAYA WILSON.</div>
     <div>
@@ -85,38 +86,45 @@
       <div class="hamburgerIcon" onclick="toggleMenu()">
         <span></span><span></span><span></span>
       </div>
-      <li><a href="#about" onclick="toggleMenu()">ABOUT</a></li>
-      <li><a href="#portfolio" onclick="toggleMenu()">DEPLOYMENTS</a></li>
-      <li><a href="#contact" onclick="toggleMenu()">CONTACT</a></li>
+      <div class="menuItems">
+        <li><a href="#about" onclick="toggleMenu()">ABOUT</a></li>
+        <li><a href="#portfolio" onclick="toggleMenu()">DEPLOYMENTS</a></li>
+        <li><a href="#contact" onclick="toggleMenu()">CONTACT</a></li>
+      </div>
     </div>
   </nav>
 
-  <!-- MAIN SECTION 
-
-  <div id="faceSlice" class="face-slice" aria-label="Split portrait">
-    <img class="slice left"  src="/assets/RealMe.png"  alt="Portrait Photo">
-    <img class="slice right" src="/assets/PastelMe.png" alt="Pastel Portrait">
-    <div class="seam" aria-hidden="true"></div>
-  </div>
-  -->
-
+  <!-- MAIN SECTION -->
   <div id="website-content">
     <section id="profile">
       <div class="sectionText">
-        <h1 class="sectionTitle1">developer</h1>
+        <h1 class="sectionTitle1">coder</h1>
         <p class="sectionP1">code that <button>clicks.</button></p>
       </div>
   
       <div class="sectionText">
-        <h1 class="sectionTitle2">designer</h1>
+        <h1 class="sectionTitle2">creator</h1>
         <p class="sectionP2">designs that captivate.</p>
       </div>
     </section>
+    
+    <section id="mobileProfile">
+      <div class="mobile-header">
+        <h1 class="mobile-title">DNAYA <span class="wilson">WILSON</span></h1>
+        <h2 class="mobile-subtitle">Creative Developer</h2>
+        <p class="mobile-p">creator === <button>coder</button> 
+        </p> 
+      </div>
+    </section>    
   </div>
   
-  
+   <!-- ABOUT SECTION -->
 
-  <!-- GAME OVERLAY -->
+   <!-- DEPLOYMENT SECTION -->
+
+   <!-- CONTACT SECTION -->
+
+  <!-- GAME OVERLAY SECTION -->
   <div id="gameLayer" role="dialog" aria-modal="true" aria-label="Game Mode">
     <button id="exitBtn">Exit Game</button>
 
