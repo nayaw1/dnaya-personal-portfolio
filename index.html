@@ -18,29 +18,29 @@
       background: radial-gradient(1200px 800px at 50% 50%, #0b0f18 0%, #020409 60%, #000 100%);
       z-index: 9999;
     }
-    #gameCanvas { width: 100%; height: 100%; display: block; }
+    #gameCanvas { width: 100%; height: 100%; display: block; position: relative; z-index: 1; }
     #exitBtn {
       position: fixed !important; top: 16px !important; right: 16px !important; z-index: 99999 !important;
       padding: 10px 12px; border-radius: 8px; border: 1px solid #4a5568; background: #111827; color: #f9fafb; cursor: pointer;
     }
     /* Optional mobile controls (hidden by default) */
-    #controls { position: absolute; inset: 0; pointer-events: none; z-index: 10000; display: none; }
+    #controls { position: fixed; inset: 0; pointer-events: none; z-index: 10050; display: none; }
     .joystick {
       position: absolute; left: 24px; bottom: 24px; width: 140px; height: 140px;
       border-radius: 999px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-      pointer-events: auto; touch-action: none;
+      pointer-events: auto; touch-action: none; z-index: 10051;
     }
     .joystick .stick {
       position: absolute; left: 50%; top: 50%; width: 70px; height: 70px; transform: translate(-50%,-50%);
       border-radius: 999px; background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.3);
     }
-    #rightButtons { position: absolute; right: 24px; bottom: 24px; display: grid; gap: 12px; pointer-events: auto; }
+    #rightButtons { position: absolute; right: 24px; bottom: 24px; display: grid; gap: 12px; pointer-events: auto; z-index: 10051; }
     .ctrlBtn {
       width: 72px; height: 72px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.2);
       background: rgba(255,255,255,0.12); color: #fff; font: 600 14px/1 system-ui; display: grid; place-items: center;
-      user-select: none; touch-action: none;
+      user-select: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; cursor: pointer; position: relative; z-index: 10051;
     }
-    .ctrlBtn:active { transform: scale(0.98); }
+    .ctrlBtn:active, .ctrlBtn.is-pressed { transform: scale(0.95); background: rgba(255,255,255,0.28); }
     @media (prefers-reduced-motion: reduce) { .anim { animation: none !important; } }
     #desktopLegend {
       position: fixed; bottom: 24px; left: 24px; z-index: 10001;
@@ -98,16 +98,16 @@
   <!-- (mobile) HERO -->
   <nav id="hamburgerNav">
     <div class="mobileLogo">DW</div>
-    <div class="hamburgerMenu">
+    <!-- <div class="hamburgerMenu">
       <div class="hamburgerIcon" onclick="toggleMenu()">
         <span></span><span></span><span></span>
       </div>
       <div class="menuItems">
-        <li><a href="#about" onclick="toggleMenu()">Who I Am</a></li>
-        <li><a href="#deployments" onclick="toggleMenu()">What I Build</a></li>
-        <li><a href="#contact" onclick="toggleMenu()">What's Next</a></li>
+        <li><a onclick="scrollToSection('about')">Who I Am</a></li>
+        <li><a onclick="scrollToSection('deployments')">What I Build</a></li>
+        <li><a onclick="scrollToSection('contact')">What's Next</a></li>
       </div>
-    </div>
+    </div> -->
   </nav>
 
   <!-- (desktop) HERO -->
@@ -585,6 +585,8 @@
       let isTyping = false;
       let gameActive = false;
 
+      window.addEventListener('gameExited', () => { gameActive = false; });
+
       // Create particle canvas for desktop button
       if (btn) {
         const canvas = document.createElement('canvas');
@@ -673,7 +675,11 @@
           gameActive = true;
           gameLayer.style.display = 'block';
           exitBtn.style.display = 'block';
-          document.getElementById('controls').style.display = 'block';
+          if (window.innerWidth <= 1200) {
+            document.getElementById('controls').style.display = 'block';
+            document.getElementById('controls').style.pointerEvents = 'auto';
+            bindMobileButtons();
+          }
           document.getElementById('desktopLegend').style.display = window.innerWidth > 1200 ? 'block' : 'none';
           if (window.startGame) {
             window.startGame();
@@ -694,86 +700,49 @@
       if (mobileBtn) {
         mobileBtn.addEventListener('click', startGame);
       }
+    })();
 
 
       // Mobile button handlers
-      window.mobileBoostPressed = false;
-      window.mobileBrakePressed = false;
-      
-      const boostBtn = document.getElementById('btnBoost');
-      const brakeBtn = document.getElementById('btnBrake');
-      
-      if (boostBtn) {
-        boostBtn.addEventListener('click', (e) => {
-          console.log('Boost clicked');
-        });
-        boostBtn.addEventListener('mousedown', (e) => {
-          console.log('Boost mousedown');
-          e.preventDefault();
-          window.mobileBoostPressed = true;
-        });
-        boostBtn.addEventListener('mouseup', (e) => {
-          console.log('Boost mouseup');
-          e.preventDefault();
-          window.mobileBoostPressed = false;
-        });
-      }
-      
-      if (brakeBtn) {
-        brakeBtn.addEventListener('click', (e) => {
-          console.log('Brake clicked');
-        });
-        brakeBtn.addEventListener('mousedown', (e) => {
-          console.log('Brake mousedown');
-          e.preventDefault();
-          window.mobileBrakePressed = true;
-        });
-        brakeBtn.addEventListener('mouseup', (e) => {
-          console.log('Brake mouseup');
-          e.preventDefault();
-          window.mobileBrakePressed = false;
-        });
-      }
-      
-      // Expose mobile button states
-      window.getMobileControls = () => ({
-        boost: window.mobileBoostPressed || false,
-        brake: window.mobileBrakePressed || false
-      });
+window.mobileThrottle = 0;
+window.mobileTurn = 0;
+window.mobileBoostPressed = false;
+window.mobileBrakePressed = false;
 
-      // Exit game function
-      function exitGame() {
-        gameActive = false;
-        gameLayer.style.display = 'none';
-        exitBtn.style.display = 'none';
-        document.getElementById('controls').style.display = 'none';
-        document.getElementById('desktopLegend').style.display = 'none';
-        if (btn) typeText('clicks');
-      }
+function bindHoldButton(el, setState) {
+  if (!el) return;
 
-      // Exit button handler
-      exitBtn.addEventListener('click', exitGame);
+  const press = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setState(true);
+    el.classList.add('is-pressed');
+  };
 
-      // ESC key handler
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && gameActive) {
-          exitGame();
-        }
-      });
+  const release = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setState(false);
+    el.classList.remove('is-pressed');
+  };
 
-      // Initialize with typing effect
-      if (btn) {
-        setTimeout(() => typeText('clicks'), 500);
+  el.addEventListener('touchstart', press, { passive: false });
+  el.addEventListener('touchend', release, { passive: false });
+  el.addEventListener('touchcancel', release, { passive: false });
+  el.addEventListener('mousedown', press);
+  el.addEventListener('mouseup', release);
+  el.addEventListener('mouseleave', release);
+  el.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); });
+}
 
-        // Retype on hover
-        btn.addEventListener('mouseenter', () => {
-          if (!isTyping && !gameActive) {
-            typeText('clicks');
-          }
-        });
-      }
-    })();
-  </script>
+let mobileButtonsBound = false;
+function bindMobileButtons() {
+  if (mobileButtonsBound) return;
+  mobileButtonsBound = true;
+  bindHoldButton(document.getElementById('btnBoost'), (state) => { window.mobileBoostPressed = state; });
+  bindHoldButton(document.getElementById('btnBrake'), (state) => { window.mobileBrakePressed = state; });
+}
+</script>
 
 
   <!-- SCRIPT #4 SECTIONS -->

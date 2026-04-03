@@ -20,8 +20,6 @@
   forceTop();
   window.addEventListener('DOMContentLoaded', forceTop, { once: true });
   window.addEventListener('load', forceTop);
-  window.addEventListener('pageshow', forceTop);     // important for Safari/back-forward cache
-  window.addEventListener('beforeunload', forceTop); // helps refresh start at top
 
   // Expose for the preloader to call at the right time
   window.__forceTop = forceTop;
@@ -29,12 +27,19 @@
 
 
 function toggleMenu() {
-    //targets a certain element on the webpage which is the hamburgerMenu and hamburgerIcon class
     const menu = document.querySelector('.hamburgerMenu');
     const icon = document.querySelector('.hamburgerIcon');
-    //when the function is called it will toggle the class open for both menu and icon
     menu.classList.toggle('open');
     icon.classList.toggle('open');
+}
+
+function scrollToSection(id) {
+  toggleMenu();
+  const el = document.getElementById(id);
+  if (!el) return;
+  setTimeout(() => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
 }
 
 //LOADING SCREEN LOGIC
@@ -168,6 +173,8 @@ document.querySelectorAll("#about .card").forEach((el) => aboutObs.observe(el));
 
 //SCROLL FIGURE SCREEN LOGIC
 (() => {
+  const strip = document.getElementById('skill-rail-wrap') || document.querySelector('.skill-rail-wrap');
+  const walker = document.getElementById('walker');
   if (!strip || !walker) return;
 
   // SVG limb groups

@@ -185,7 +185,8 @@ function initGame() {
     turnRate: 1.9,         // rad/s @ full lock
     friction: 2.5,         // natural slowdown
     grip: 1.0,             // 1.0 on asphalt, ~0.5 on grass
-    boostAccel: 100,       // when Shift is pressed
+    boostAccel: 140,       // when Shift is pressed
+    boostTopSpeed: 155,    // NEW: boosted top speed on asphalt
     boostDrain: 30,        // per second
     boostRegen: 10,        // per second when not boosting
     maxBoost: 100,
@@ -352,9 +353,14 @@ window.startGame = function() {
 
   function stop() {
     if (gameLayer) gameLayer.style.display = 'none';
+    if (exitBtn) exitBtn.style.display = 'none';
+    const controls = document.getElementById('controls');
+    if (controls) controls.style.display = 'none';
     running = false;
     ui.root.style.display = 'none';
     if (rafId) cancelAnimationFrame(rafId);
+    window.gameActive = false;
+    window.dispatchEvent(new Event('gameExited'));
   }
 
   function animate() {
@@ -669,111 +675,93 @@ window.startGame = function() {
 
   // ======== update ========
   function update(dt) {
-    // Input
-    const forward = keys['w'] || keys['arrowup'];
-    const back    = keys['s'] || keys['arrowdown'];
-    const left    = keys['a'] || keys['arrowleft'];
-    const right   = keys['d'] || keys['arrowright'];
-    
-    // Mobile controls - debug
-    const boostKey= keys[' '] || keys['space'] || (window.mobileBoostPressed === true); // Space for boost or mobile
-    const brakeKey= keys['shift'] || (window.mobileBrakePressed === true); // Shift for brake or mobile
-    
-    if (boostKey) console.log('Boost key active');
-    if (brakeKey) console.log('Brake key active');
-
-    // Surface grip (cheap check: are we inside asphalt ring?)
+    // Desktop keyboard input
+    const kbForward = keys['w'] || keys['arrowup'];
+    const kbBack    = keys['s'] || keys['arrowdown'];
+    const kbLeft    = keys['a'] || keys['arrowleft'];
+    const kbRight   = keys['d'] || keys['arrowright'];
+    const kbBoost   = keys[' '] || keys['space'];
+    const kbBrake   = keys['shift'] || keys['shiftleft'] || keys['shiftright'];
+  
+    // Mobile input
+    const mobileThrottle = window.mobileThrottle || 0;   // 0..1
+    const mobileTurn = window.mobileTurn || 0;           // -1..1
+    const mobileBoost = window.mobileBoostPressed === true;
+    const mobileBrake = window.mobileBrakePressed === true;
+  
+    // Combined input: desktop stays, mobile gets added
+    const forward = kbForward || mobileThrottle > 0.08;
+    const back    = kbBack;
+    const left    = kbLeft || mobileTurn < -0.12;
+    const right   = kbRight || mobileTurn > 0.12;
+    const boostKey = kbBoost || mobileBoost;
+    const brakeKey = kbBrake || mobileBrake;
+  
+    // Surface grip
     const onAsphalt = pointInAsphalt(carRig.position.x, carRig.position.z);
     const grip = onAsphalt ? 1.0 : 0.55;
-    const maxSpeed = onAsphalt ? params.maxSpeed : params.maxSpeed * 0.5;
 
-    // Acceleration/braking
-    if (forward) {
-      const accel = (boostKey && boost > 0 ? params.boostAccel : params.accel);
-      speed += accel * dt;
-      if (boostKey) console.log('Boosting with speed:', speed);
+    const baseMaxSpeed = onAsphalt ? params.maxSpeed : params.maxSpeed * 0.5;
+    const boostedMaxSpeed = onAsphalt ? params.boostTopSpeed : params.maxSpeed * 0.5;
+    const isBoosting = boostKey && onAsphalt && boost > 0;
+
+    const maxSpeed = isBoosting ? boostedMaxSpeed : baseMaxSpeed;
+
+    // Acceleration / braking
+    if (forward || isBoosting) {
+      const throttleStrength = kbForward ? 1 : Math.max(0.55, mobileThrottle || (isBoosting ? 1 : 0));
+      const accel = isBoosting ? params.boostAccel : params.accel;
+      speed += accel * throttleStrength * dt;
     }
     if (back || brakeKey) {
-      speed -= params.brake * 3 * dt; // Triple brake force
-      if (speed < 0) speed = 0; // Don't go into reverse
-      if (brakeKey) console.log('Braking, speed now:', speed);
+      speed -= params.brake * 3 * dt;
+      if (speed < 0) speed = 0;
     }
+  
     // Friction
     const fr = params.friction * (onAsphalt ? 1.0 : 1.6);
     if (!forward && !back && !brakeKey) {
       if (speed > 0) speed = Math.max(0, speed - fr * dt);
       if (speed < 0) speed = Math.min(0, speed + fr * dt);
     }
+  
     // Clamp speed
     speed = THREE.MathUtils.clamp(speed, -25, maxSpeed);
-
+  
     // Boost meter
-    if (boostKey && forward && onAsphalt && boost > 0) {
+    if (boostKey && onAsphalt && boost > 0) {
       boost = Math.max(0, boost - params.boostDrain * dt);
     } else {
       boost = Math.min(params.maxBoost, boost + params.boostRegen * dt);
     }
     ui.boost.style.width = `${(boost / params.maxBoost) * 100}%`;
-
-    // Steering
-    const steer = (left ? 1 : 0) * (right ? 0 : 1) - (right ? 1 : 0) * (left ? 0 : 1);
+  
+    // Steering: keyboard wins if pressed, otherwise use mobile analog turn
+    let steer = 0;
+    if (kbLeft) steer += 1;
+    if (kbRight) steer -= 1;
+  
+    if (!kbLeft && !kbRight) {
+      steer = -mobileTurn;
+    }
+  
     const turn = params.turnRate * steer * (0.6 + 0.4 * (1 - Math.abs(speed) / params.maxSpeed));
     heading += turn * dt * grip;
-
+  
     // Integrate
     const vx = -Math.sin(heading) * speed * dt;
     const vz = -Math.cos(heading) * speed * dt;
     carRig.position.x += vx;
     carRig.position.z += vz;
     carRig.rotation.y = heading;
-
+  
     // Animate rear wheels based on speed
     if (carBody && carBody.userData.rearWheels) {
-      const wheelRotation = speed * dt * 2; // Adjust multiplier for realistic rotation
+      const wheelRotation = speed * dt * 2;
       carBody.userData.rearWheels.forEach(wheel => {
         wheel.rotation.x += wheelRotation;
       });
     }
-
-    // Keep slightly above ground
-    carRig.position.y = 0.3;
-
-    // If off apron into deep grass (inside the infield hole), gently push back
-    confineToPlayableArea();
-
-    // Camera follow (spring) - THIRD PERSON VIEW
-    const cam = camera.parent; // camRig
-    const desired = new THREE.Vector3(0, 3, -8); // Mario Kart style - much closer
-    cam.position.lerp(desired, 1 - Math.pow(0.001, dt));
-
-    // Laps
-    handleCheckpointsAndLaps();
-    // Coins rotation and pickup
-    if (coinGroup) {
-      const carPos = carRig.position;
-      for (const coin of coinGroup.children) {
-        if (!coin.visible) continue;
-        coin.rotation.z += 2.0 * dt; // Rotate around Z axis
-        // simple distance check in XZ
-        const dx = coin.position.x - carPos.x;
-        const dz = coin.position.z - carPos.z;
-        if ((dx*dx + dz*dz) < 1.2*1.2) {
-          coin.visible = false;
-          coinsCollected += 1;
-          ui.coins.textContent = `${coinsCollected}`;
-          flashBanner(`+1 coin (${coinsCollected})`);
-        }
-      }
-    }
-
-
-    // UI speed + lap timer
-    ui.speed.textContent = `${Math.round(speed)}`;
-    const now = performance.now();
-    const lapMs = now - lapStartTime;
-    ui.lapTimer.textContent = formatMs(lapMs);
-    ui.lap.textContent = `${lap}`;
-    ui.best.textContent = bestLap != null ? formatMs(bestLap) : '--:--.--';
   }
 
   function formatMs(ms) {
@@ -986,43 +974,113 @@ const section = document.getElementById("mobileSkillsGame");
 const woman = document.getElementById("stickWoman");
 const tags = [...document.querySelectorAll(".skill-tag")];
 
-let lastScrollY = window.scrollY;
-
-tags.forEach(tag => {
-  tag.style.left = `${tag.dataset.x}%`;
-});
-
-function updateSkillGame() {
-  const rect = section.getBoundingClientRect();
-  const windowH = window.innerHeight;
-
-  const start = windowH;
-  const end = -rect.height;
-  const progress = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
-
-  const laneWidth = section.querySelector(".skill-lane").offsetWidth;
-  const womanWidth = woman.offsetWidth;
-  const womanX = progress * (laneWidth - womanWidth);
-
-  woman.style.transform = `translateX(${womanX}px)`;
-
-  const currentScrollY = window.scrollY;
-  const direction = currentScrollY > lastScrollY ? "forward" : "backward";
-  woman.dataset.direction = direction;
-  lastScrollY = currentScrollY;
+if (section && woman && tags.length) {
+  let lastScrollY = window.scrollY;
 
   tags.forEach(tag => {
-    if (tag.classList.contains("collected")) return;
-
-    const tagX = (parseFloat(tag.dataset.x) / 100) * laneWidth;
-    const distance = Math.abs((womanX + womanWidth * 0.7) - tagX);
-
-    if (distance < 38) {
-      tag.classList.add("collected");
-    }
+    tag.style.left = `${tag.dataset.x}%`;
   });
+
+  function updateSkillGame() {
+    const rect = section.getBoundingClientRect();
+    const windowH = window.innerHeight;
+
+    const start = windowH;
+    const end = -rect.height;
+    const progress = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
+
+    const lane = section.querySelector(".skill-lane");
+    if (!lane) return;
+
+    const laneWidth = lane.offsetWidth;
+    const womanWidth = woman.offsetWidth;
+    const womanX = progress * (laneWidth - womanWidth);
+
+    woman.style.transform = `translateX(${womanX}px)`;
+
+    const currentScrollY = window.scrollY;
+    const direction = currentScrollY > lastScrollY ? "forward" : "backward";
+    woman.dataset.direction = direction;
+    lastScrollY = currentScrollY;
+
+    tags.forEach(tag => {
+      if (tag.classList.contains("collected")) return;
+
+      const tagX = (parseFloat(tag.dataset.x) / 100) * laneWidth;
+      const distance = Math.abs((womanX + womanWidth * 0.7) - tagX);
+
+      if (distance < 38) {
+        tag.classList.add("collected");
+      }
+    });
+  }
+
+  window.addEventListener("scroll", updateSkillGame, { passive: true });
+  window.addEventListener("resize", updateSkillGame);
+  updateSkillGame();
 }
 
-window.addEventListener("scroll", updateSkillGame, { passive: true });
-window.addEventListener("resize", updateSkillGame);
-updateSkillGame();
+
+
+const leftJoy = document.getElementById('leftJoy');
+const stick = leftJoy?.querySelector('.stick');
+
+window.mobileTurn = 0;
+window.mobileThrottle = 0;
+
+if (leftJoy && stick) {
+  const maxRadius = 35;
+  let activePointerId = null;
+
+  function updateStick(clientX, clientY) {
+    const rect = leftJoy.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    let dx = clientX - centerX;
+    let dy = clientY - centerY;
+
+    const dist = Math.hypot(dx, dy);
+    if (dist > maxRadius) {
+      const angle = Math.atan2(dy, dx);
+      dx = Math.cos(angle) * maxRadius;
+      dy = Math.sin(angle) * maxRadius;
+    }
+
+    stick.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+
+    // THIS is what update(dt) actually reads
+    window.mobileTurn = dx / maxRadius;
+
+    // up = forward throttle
+    window.mobileThrottle = Math.max(0, -dy / maxRadius);
+  }
+
+  function resetStick() {
+    stick.style.transform = 'translate(-50%, -50%)';
+    window.mobileTurn = 0;
+    window.mobileThrottle = 0;
+    activePointerId = null;
+  }
+
+  leftJoy.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    if (!t) return;
+    activePointerId = t.identifier;
+    updateStick(t.clientX, t.clientY);
+  }, { passive: false });
+
+  leftJoy.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const t = Array.from(e.changedTouches).find(t => t.identifier === activePointerId);
+    if (t) updateStick(t.clientX, t.clientY);
+  }, { passive: false });
+
+  leftJoy.addEventListener('touchend', (e) => {
+    const t = Array.from(e.changedTouches).find(t => t.identifier === activePointerId);
+    if (t) resetStick();
+  }, { passive: false });
+
+  leftJoy.addEventListener('touchcancel', resetStick, { passive: false });
+}

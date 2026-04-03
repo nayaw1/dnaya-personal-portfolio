@@ -52,6 +52,7 @@
     color: black;
     text-decoration: none;
     font-size: 1.2rem;
+    cursor: pointer;
 }
 
 .hamburgerMenu .menuItems li a:hover {
@@ -234,7 +235,7 @@
 
 /************* MOBILE GAMING STYLES *************/
 #controls {
-    position: absolute;
+    position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 10000;
@@ -290,8 +291,10 @@
     touch-action: none;
 }
 
-.ctrlBtn:active {
-    transform: scale(0.98);
+.ctrlBtn:active,
+.ctrlBtn.is-pressed {
+    transform: scale(0.95);
+    background: rgba(255,255,255,0.28);
 }
 
 
