@@ -268,6 +268,10 @@ window.startGame = function() {
     grass.receiveShadow = true;
     scene.add(grass);
 
+    // Add initials in the infield
+    const initialsGroup = buildInitials();
+    scene.add(initialsGroup);
+
     // Build NASCAR oval (flat)
     const { track, wall, apron, startFinish, cps } = buildOvalTrack();
     trackMesh = track;
@@ -486,6 +490,101 @@ window.startGame = function() {
     return new THREE.LineSegments(geom, mat);
   }
 
+  function buildInitials() {
+    const group = new THREE.Group();
+    const letterMat = new THREE.MeshStandardMaterial({ color: 0x1976d2, roughness: 0.6 });
+    
+    // "D" - made from boxes
+    const dGroup = new THREE.Group();
+    // Vertical bar
+    const dVert = new THREE.Mesh(
+      new THREE.BoxGeometry(2, 0.5, 12),
+      letterMat
+    );
+    dVert.position.set(-4, 0.25, 0);
+    dGroup.add(dVert);
+    
+    // Top horizontal
+    const dTop = new THREE.Mesh(
+      new THREE.BoxGeometry(6, 0.5, 2),
+      letterMat
+    );
+    dTop.position.set(-1, 0.25, -5);
+    dGroup.add(dTop);
+    
+    // Bottom horizontal
+    const dBot = new THREE.Mesh(
+      new THREE.BoxGeometry(6, 0.5, 2),
+      letterMat
+    );
+    dBot.position.set(-1, 0.25, 5);
+    dGroup.add(dBot);
+    
+    // Right vertical (shorter)
+    const dRight = new THREE.Mesh(
+      new THREE.BoxGeometry(2, 0.5, 8),
+      letterMat
+    );
+    dRight.position.set(2, 0.25, 0);
+    dGroup.add(dRight);
+    
+    group.add(dGroup);
+    
+    // "W" - made from boxes
+    const wGroup = new THREE.Group();
+    wGroup.position.x = 15; // Space between letters
+    
+    // Left vertical
+    const wLeft = new THREE.Mesh(
+      new THREE.BoxGeometry(2, 0.5, 12),
+      letterMat
+    );
+    wLeft.position.set(-4, 0.25, 0);
+    wGroup.add(wLeft);
+    
+    // Right vertical
+    const wRight = new THREE.Mesh(
+      new THREE.BoxGeometry(2, 0.5, 12),
+      letterMat
+    );
+    wRight.position.set(4, 0.25, 0);
+    wGroup.add(wRight);
+    
+    // Middle vertical (shorter)
+    const wMid = new THREE.Mesh(
+      new THREE.BoxGeometry(2, 0.5, 6),
+      letterMat
+    );
+    wMid.position.set(0, 0.25, 3);
+    wGroup.add(wMid);
+    
+    // Left diagonal
+    const wDiagL = new THREE.Mesh(
+      new THREE.BoxGeometry(4, 0.5, 2),
+      letterMat
+    );
+    wDiagL.position.set(-2, 0.25, -3);
+    wDiagL.rotation.y = Math.PI / 4;
+    wGroup.add(wDiagL);
+    
+    // Right diagonal
+    const wDiagR = new THREE.Mesh(
+      new THREE.BoxGeometry(4, 0.5, 2),
+      letterMat
+    );
+    wDiagR.position.set(2, 0.25, -3);
+    wDiagR.rotation.y = -Math.PI / 4;
+    wGroup.add(wDiagR);
+    
+    group.add(wGroup);
+    
+    // Position in center of infield
+    group.position.set(0, 0, 0);
+    group.rotation.y = Math.PI / 2; // Rotate so it's readable from the track
+    
+    return group;
+  }
+  
   function buildCarPlaceholder() {
     // A simple boxy car with four 'wheels' so you have something to drive immediately.
     const group = new THREE.Group();
@@ -575,7 +674,13 @@ window.startGame = function() {
     const back    = keys['s'] || keys['arrowdown'];
     const left    = keys['a'] || keys['arrowleft'];
     const right   = keys['d'] || keys['arrowright'];
-    const boostKey= keys['shift'] || keys['shiftleft'] || keys['shiftright'];
+    
+    // Mobile controls - debug
+    const boostKey= keys[' '] || keys['space'] || (window.mobileBoostPressed === true); // Space for boost or mobile
+    const brakeKey= keys['shift'] || (window.mobileBrakePressed === true); // Shift for brake or mobile
+    
+    if (boostKey) console.log('Boost key active');
+    if (brakeKey) console.log('Brake key active');
 
     // Surface grip (cheap check: are we inside asphalt ring?)
     const onAsphalt = pointInAsphalt(carRig.position.x, carRig.position.z);
@@ -583,11 +688,19 @@ window.startGame = function() {
     const maxSpeed = onAsphalt ? params.maxSpeed : params.maxSpeed * 0.5;
 
     // Acceleration/braking
-    if (forward) speed += (boostKey && boost > 0 ? params.boostAccel : params.accel) * dt;
-    if (back)    speed -= params.brake * dt;
+    if (forward) {
+      const accel = (boostKey && boost > 0 ? params.boostAccel : params.accel);
+      speed += accel * dt;
+      if (boostKey) console.log('Boosting with speed:', speed);
+    }
+    if (back || brakeKey) {
+      speed -= params.brake * 3 * dt; // Triple brake force
+      if (speed < 0) speed = 0; // Don't go into reverse
+      if (brakeKey) console.log('Braking, speed now:', speed);
+    }
     // Friction
     const fr = params.friction * (onAsphalt ? 1.0 : 1.6);
-    if (!forward && !back) {
+    if (!forward && !back && !brakeKey) {
       if (speed > 0) speed = Math.max(0, speed - fr * dt);
       if (speed < 0) speed = Math.min(0, speed + fr * dt);
     }
@@ -742,15 +855,28 @@ window.startGame = function() {
       hud.style.color = '#fff';
       hud.style.textShadow = '0 1px 2px rgba(0,0,0,0.6)';
       hud.innerHTML = `
-        <div style="display:flex; gap:16px; align-items:center">
-          <div>Lap: <span id="hudLap">0</span></div><div>Coins: <span id="hudCoins">0</span></div>
-          <div>Lap Time: <span id="hudLapTimer">0:00.00</span></div>
-          <div>Best: <span id="hudBest">--:--.--</span></div>
-          <div>Speed: <span id="hudSpeed">0</span> u/s</div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <div style="background:rgba(0,0,0,0.7); padding:4px 8px; border-radius:4px; border-left:2px solid #ff6b35; font-size:12px;">Lap: <span id="hudLap" style="color:#ff6b35; font-weight:bold;">0</span></div>
+          <div style="background:rgba(0,0,0,0.7); padding:4px 8px; border-radius:4px; border-left:2px solid #ffd54f; font-size:12px;">Coins: <span id="hudCoins" style="color:#ffd54f; font-weight:bold;">0</span></div>
+          <div style="background:rgba(0,0,0,0.7); padding:4px 8px; border-radius:4px; border-left:2px solid #4fc3f7; font-size:12px;">Time: <span id="hudLapTimer" style="color:#4fc3f7; font-weight:bold;">0:00.00</span></div>
+          <div style="background:rgba(0,0,0,0.7); padding:4px 8px; border-radius:4px; border-left:2px solid #66bb6a; font-size:12px;">Best: <span id="hudBest" style="color:#66bb6a; font-weight:bold;">--:--.--</span></div>
+          <div style="background:rgba(0,0,0,0.7); padding:4px 8px; border-radius:4px; border-left:2px solid #ab47bc; font-size:12px;">Speed: <span id="hudSpeed" style="color:#ab47bc; font-weight:bold;">0</span></div>
         </div>
-        <div style="margin-top:8px; width:220px; height:8px; border:1px solid rgba(255,255,255,0.6)">
-          <div id="hudBoost" style="height:100%; width:100%; background:#19d27d"></div>
+        <div style="background:rgba(0,0,0,0.7); padding:6px 8px; border-radius:4px; border-left:2px solid #19d27d; margin-top:6px; width:180px;">
+          <div style="color:#19d27d; font-weight:bold; font-size:10px; margin-bottom:3px;">BOOST</div>
+          <div style="width:100%; height:6px; background:rgba(255,255,255,0.2); border-radius:3px; overflow:hidden;">
+            <div id="hudBoost" style="height:100%; width:100%; background:linear-gradient(90deg, #19d27d, #4caf50); transition:width 0.1s ease;"></div>
+          </div>
         </div>
+        <style>
+          @media (max-width: 1200px) {
+            #hud { left: 8px !important; top: 8px !important; }
+            #hud > div:first-child { gap: 6px !important; }
+            #hud > div:first-child > div { padding: 3px 6px !important; font-size: 11px !important; }
+            #hud > div:last-child { width: 150px !important; padding: 4px 6px !important; }
+            #exitBtn { top: 32px !important; }
+          }
+        </style>
       `;
       document.body.appendChild(hud);
       hud.style.display = 'none'; // Hide initially
@@ -761,8 +887,9 @@ window.startGame = function() {
       banner = document.createElement('div');
       banner.id = 'hudBanner';
       banner.style.position = 'fixed';
-      banner.style.top = '24px';
-      banner.style.right = '24px';
+      banner.style.top = '50%';
+      banner.style.left = '50%';
+      banner.style.transform = 'translate(-50%, -50%)';
       banner.style.padding = '10px 14px';
       banner.style.background = 'rgba(0,0,0,0.6)';
       banner.style.color = '#fff';
@@ -850,3 +977,52 @@ if (document.readyState === 'loading') {
   initGame();
 }
 
+
+
+
+
+//MOBILE JS
+const section = document.getElementById("mobileSkillsGame");
+const woman = document.getElementById("stickWoman");
+const tags = [...document.querySelectorAll(".skill-tag")];
+
+let lastScrollY = window.scrollY;
+
+tags.forEach(tag => {
+  tag.style.left = `${tag.dataset.x}%`;
+});
+
+function updateSkillGame() {
+  const rect = section.getBoundingClientRect();
+  const windowH = window.innerHeight;
+
+  const start = windowH;
+  const end = -rect.height;
+  const progress = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
+
+  const laneWidth = section.querySelector(".skill-lane").offsetWidth;
+  const womanWidth = woman.offsetWidth;
+  const womanX = progress * (laneWidth - womanWidth);
+
+  woman.style.transform = `translateX(${womanX}px)`;
+
+  const currentScrollY = window.scrollY;
+  const direction = currentScrollY > lastScrollY ? "forward" : "backward";
+  woman.dataset.direction = direction;
+  lastScrollY = currentScrollY;
+
+  tags.forEach(tag => {
+    if (tag.classList.contains("collected")) return;
+
+    const tagX = (parseFloat(tag.dataset.x) / 100) * laneWidth;
+    const distance = Math.abs((womanX + womanWidth * 0.7) - tagX);
+
+    if (distance < 38) {
+      tag.classList.add("collected");
+    }
+  });
+}
+
+window.addEventListener("scroll", updateSkillGame, { passive: true });
+window.addEventListener("resize", updateSkillGame);
+updateSkillGame();

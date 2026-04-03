@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DNAYA WILSON | CREATIVE DEVELOPER</title>
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"/>
+  <link rel="stylesheet" href="mobilestyles.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+
+  <link rel="stylesheet" href="mediaqueries.css"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    #gameLayer {
+      position: fixed; inset: 0; display: none;
+      background: radial-gradient(1200px 800px at 50% 50%, #0b0f18 0%, #020409 60%, #000 100%);
+      z-index: 9999;
+    }
+    #gameCanvas { width: 100%; height: 100%; display: block; }
+    #exitBtn {
+      position: fixed !important; top: 16px !important; right: 16px !important; z-index: 99999 !important;
+      padding: 10px 12px; border-radius: 8px; border: 1px solid #4a5568; background: #111827; color: #f9fafb; cursor: pointer;
+    }
+    /* Optional mobile controls (hidden by default) */
+    #controls { position: absolute; inset: 0; pointer-events: none; z-index: 10000; display: none; }
+    .joystick {
+      position: absolute; left: 24px; bottom: 24px; width: 140px; height: 140px;
+      border-radius: 999px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      pointer-events: auto; touch-action: none;
+    }
+    .joystick .stick {
+      position: absolute; left: 50%; top: 50%; width: 70px; height: 70px; transform: translate(-50%,-50%);
+      border-radius: 999px; background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.3);
+    }
+    #rightButtons { position: absolute; right: 24px; bottom: 24px; display: grid; gap: 12px; pointer-events: auto; }
+    .ctrlBtn {
+      width: 72px; height: 72px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.12); color: #fff; font: 600 14px/1 system-ui; display: grid; place-items: center;
+      user-select: none; touch-action: none;
+    }
+    .ctrlBtn:active { transform: scale(0.98); }
+    @media (prefers-reduced-motion: reduce) { .anim { animation: none !important; } }
+    #desktopLegend {
+      position: fixed; bottom: 24px; left: 24px; z-index: 10001;
+      background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px; padding: 16px; color: #f9fafb; font: 14px/1.4 system-ui;
+      display: none;
+    }
+    #desktopLegend h3 { margin: 0 0 8px 0; font-size: 16px; color: #00ff41; }
+    #desktopLegend div { margin: 4px 0; }
+    @media (min-width: 1201px) {
+      #controls { display: none !important; }
+    }
+    @media (max-width: 1200px) {
+      #desktopHero { display: none !important; }
+      #hero { display: none !important; }
+      .heroText { display: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- LOADING SCREEN -->
+  <div id="preloader" aria-live="polite">
+    <div class="preloader-content">
+      <div class="battery">
+        <div class="battery-tip"></div>
+        <div class="battery-inner">
+          <div class="battery-fill"></div>
+          <div class="battery-gloss"></div>
+        </div>
+        <div class="battery-reflection"></div>
+      </div>
+      <div class="label">
+        Social Battery Loading<span id="dots">...</span><span id="percent">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <nav id="desktopNav">
+    <div class="logo">DW</div>
+    <div>
+      <ul class="navLinks">
+        <li><a href="#about">ABOUT</a></li>
+        <li><a href="#deployments">DEPLOYMENTS</a></li>
+        <li><a href="#contact">CONTACT</a></li>
+      </ul>
+    </div>
+
+    <button id="modeToggle" class="mode-toggle" type="button" aria-pressed="false">
+      Developer Mode
+    </button>
+    
+  </nav>
+
+  <nav id="hamburgerNav">
+    <div class="mobileLogo">DW</div>
+    <div class="hamburgerMenu">
+      <div class="hamburgerIcon" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="menuItems">
+        <li><a href="#about" onclick="toggleMenu()">ABOUT</a></li>
+        <li><a href="#deployments" onclick="toggleMenu()">DEPLOYMENTS</a></li>
+        <li><a href="#contact" onclick="toggleMenu()">CONTACT</a></li>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div id="desktopHero">
+    <section id="hero">
+      <div class="heroText">
+        <h1 class="heroTitle">coder</h1>
+        <p class="heroP">code that <button id="gameToggle">clicks.</button></p>
+      </div>
+
+      <div class="heroText">
+        <h1 class="heroTitle2">creator</h1>
+        <p class="heroP2">designs that captivate.</p>
+      </div>
+    </section>
+  </div>
+
+  <div id="mobileHero">
+    <section>
+      <div class="mobileHeader">
+        <h1 class="mobileTitle">DNAYA <span class="wilson">WILSON</span></h1>
+        <h2 class="mobileSubtitle">Creative Developer</h2>
+        <p class="mobileP">creator === <button id="mobileGameToggle">coder</button>
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <!-- SECTIONS -->
+   
+  <div class="wrap">
+
+    <!-- ABOUT -->
+    <section id="about">
+      <!-- SKILL RAIL -->
+      <div class="section-01-header">
+
+        <div class="stick-skill">
+      
+          <!-- STICK WOMAN -->
+        <div class="walker" id="walker">
+
+          <svg viewBox="0 0 64 64" width="64" height="64" stroke="white" stroke-width="3" fill="none">
+
+            <!-- head -->
+            <circle cx="32" cy="10" r="6"/>
+
+            <!-- body -->
+            <line x1="32" y1="16" x2="32" y2="34"/>
+
+            <!-- arms -->
+            <line x1="32" y1="20" x2="18" y2="28"/>
+            <line x1="32" y1="20" x2="46" y2="28"/>
+
+            <!-- legs -->
+            <line x1="32" y1="34" x2="20" y2="50"/>
+            <line x1="32" y1="34" x2="44" y2="50"/>
+
+          </svg>
+        </div>
+      
+          <div class="skills">
+            <span>HTML</span>
+            <span>CSS</span>
+            <span>JavaScript</span>
+            <span>TypeScript</span>
+            <span>Angular</span>
+            <span>Three.js</span>
+            <span>Motion</span>
+          </div>
+      
+        </div>
+      
+      </div>
+
+      <div class="section-title">
+        <h2>About</h2>
+      </div>
+
+      <div class="about-grid">
+        <div class="card">
+          <h3>Hi, I’m Dnaya.</h3>
+            <!-- NEW: Now Building Strip -->
+            <div class="about-strip" role="group" aria-label="Now building">
+              <div class="strip-top">
+                <span class="dot" aria-hidden="true"></span>
+                <p class="strip-text"><strong>Now building:</strong> interactive UI systems + playful prototypes</p>
+              </div>
+
+              <div class="strip-chips" aria-label="Signals">
+                <span class="chip">Focus: Creative Technologist</span>
+                <span class="chip">Strength: Motion + UX</span>
+                <span class="chip">Tools: Angular • TS • Three</span>
+                <span class="chip">Experience: 5+ years professional</span>
+              </div>
+            </div>
+
+        </div>
+
+        <div class="card">
+          <p>
+            Part engineer. Part artist. <br>
+            I live at the intersection of logic and imagination.<br>
+            I build immersive web experiences that think with structure and move with purpose.
+          </p>
+
+          <h3>Toolkit</h3>
+          <div class="pill-row">
+            <span class="pill">Angular</span><span class="pill">TypeScript</span><span class="pill">RxJS</span>
+            <span class="pill">SCSS</span><span class="pill">REST APIs</span><span class="pill">Git</span>
+            <span class="pill">Testing</span><span class="pill">CI/CD</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- DEPLOYMENTS -->
+    <section id="deployments">
+      <div class="section-title">
+        <h2>Deployments</h2>
+      </div>
+
+      <div class="timeline">
+        <!-- Item 1 -->
+        <div class="t-item">
+          <div class="t-card">
+            <div class="t-top">
+              <h3 class="t-title">Calculator</h3>
+              <p class="t-date">Feb 2026</p>
+            </div>
+            <p class="t-desc">
+              Rebuilt layout into three focused sections with a responsive timeline and modal contact flow.
+            </p>
+            <div class="pill-row" aria-label="Tags">
+              <span class="pill">Responsive</span>
+              <span class="pill">UI polish</span>
+              <span class="pill">Accessibility</span>
+            </div>
+            <div class="t-links">
+              <a href="#" aria-label="View live">Live</a>
+              <a href="#" aria-label="View code">Code</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="t-item">
+          <div class="t-card">
+            <div class="t-top">
+              <h3 class="t-title">Car Game</h3>
+              <p class="t-date">Jan 2026</p>
+            </div>
+            <p class="t-desc">
+              Short-form motion experiments focused on camera movement, framing, and clean typography overlays.
+            </p>
+            <div class="pill-row">
+              <span class="pill">Content</span>
+              <span class="pill">Motion</span>
+              <span class="pill">Editing</span>
+            </div>
+            <div class="t-links">
+              <a href="#" aria-label="Watch">Watch</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="t-item">
+          <div class="t-card">
+            <div class="t-top">
+              <h3 class="t-title">Personal Portfolio</h3>
+              <p class="t-date">Jan 2026</p>
+            </div>
+            <p class="t-desc">
+              Short-form motion experiments focused on camera movement, framing, and clean typography overlays.
+            </p>
+            <div class="pill-row">
+              <span class="pill">Content</span>
+              <span class="pill">Motion</span>
+              <span class="pill">Editing</span>
+            </div>
+            <div class="t-links">
+              <a href="#" aria-label="Watch">Watch</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="t-item">
+          <div class="t-card">
+            <div class="t-top">
+              <h3 class="t-title">Enterprise UI</h3>
+              <p class="t-date">Jan 2026</p>
+            </div>
+            <p class="t-desc">
+              Short-form motion experiments focused on camera movement, framing, and clean typography overlays.
+            </p>
+            <div class="pill-row">
+              <span class="pill">Content</span>
+              <span class="pill">Motion</span>
+              <span class="pill">Editing</span>
+            </div>
+            <div class="t-links">
+              <a href="#" aria-label="Watch">Watch</a>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="section-title">
+        <h2>Contact</h2>
+      </div>
+
+      <div class="contact-row">
+        <p class="hint" style="max-width: 70ch; margin: 0;">
+          Want to collaborate or hire me? Click the button and drop your details—I'll get back to you.
+        </p>
+        <button class="btn primary" id="openContact">Message me</button>
+      </div>
+    </section>
+
+    <!-- Modal -->
+    <dialog id="contactDialog" aria-labelledby="contactTitle">
+      <form class="modal" id="contactForm" method="dialog">
+        <div class="modal-head">
+          <div>
+            <h3 id="contactTitle">Send a message</h3>
+            <small>Fields marked * are required.</small>
+          </div>
+          <button class="btn" value="cancel" aria-label="Close dialog">Close</button>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="firstName">First name *</label>
+            <input id="firstName" name="firstName" autocomplete="given-name" required />
+          </div>
+          <div class="field">
+            <label for="lastName">Last name *</label>
+            <input id="lastName" name="lastName" autocomplete="family-name" required />
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" autocomplete="tel" inputmode="tel" />
+          </div>
+          <div class="field">
+            <label for="email">Email *</label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
+          </div>
+          <div class="field full">
+            <label for="message">Brief message *</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn" value="cancel">Cancel</button>
+          <button class="btn primary" id="submitBtn" value="submit">Send</button>
+        </div>
+      </form>
+    </dialog>
+  </div>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Copyright &#169; 2025 DNAYA WILSON. All Rights Reserved.</p>
+  </footer>
+
+  <!-- GAME OVERLAY SECTION -->
+  <button id="exitBtn" style="display: none;">Exit Game</button>
+  <div id="desktopLegend">
+    <h3>Controls</h3>
+    <div>WASD - Move</div>
+    <div>Space - Boost</div>
+    <div>Shift - Brake</div>
+    <div>ESC - Exit</div>
+  </div>
+  <div id="gameLayer" role="dialog" aria-modal="true" aria-label="Game Mode">
+    <div id="controls" aria-hidden="true">
+      <div id="leftJoy" class="joystick" aria-label="Steering joystick">
+        <div class="stick"></div>
+      </div>
+      <div id="rightButtons">
+        <button id="btnBrake" class="ctrlBtn" aria-label="Brake">Brake</button>
+        <button id="btnBoost" class="ctrlBtn" aria-label="Boost">Boost</button>
+      </div>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+  </div>
+
+  <!-- SCRIPT -->
+  <script src="script.js"></script>
+
+  <!-- IMPORT MAP FOR: 'three' -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+
+  <!-- SCRIPT #2 -->
+  <script type="module" src="game.js"></script>
+
+  <!-- SCRIPT #3-->
+  <script>
+    // Terminal Typing Effect & Game Loading
+    (function () {
+      const btn = document.getElementById('gameToggle');
+      const mobileBtn = document.getElementById('mobileGameToggle');
+      const gameLayer = document.getElementById('gameLayer');
+      const exitBtn = document.getElementById('exitBtn');
+      let isTyping = false;
+      let gameActive = false;
+
+      // Create particle canvas for desktop button
+      if (btn) {
+        const canvas = document.createElement('canvas');
+        canvas.id = 'particleCanvas';
+        canvas.width = 200;
+        canvas.height = 50;
+        btn.appendChild(canvas);
+
+        const ctx = canvas.getContext('2d');
+        const particles = [];
+
+        // Particle class
+        class Particle {
+          constructor() {
+            this.reset();
+          }
+
+          reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + 5;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = -Math.random() * 2 - 1;
+            this.life = 1;
+            this.decay = Math.random() * 0.02 + 0.01;
+          }
+
+          update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.life -= this.decay;
+
+            if (this.life <= 0) this.reset();
+          }
+
+          draw() {
+            ctx.save();
+            ctx.globalAlpha = this.life * 0.8;
+            ctx.fillStyle = '#00ff41';
+            ctx.fillRect(this.x, this.y, 1, 1);
+            ctx.restore();
+          }
+        }
+
+        // Initialize particles
+        for (let i = 0; i < 15; i++) {
+          particles.push(new Particle());
+        }
+
+        // Animate particles
+        function animateParticles() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach(p => {
+            p.update();
+            p.draw();
+          });
+          requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+      }
+
+      // Terminal typing effect
+      function typeText(text, callback) {
+        if (isTyping) return;
+        isTyping = true;
+
+        let i = 0;
+        btn.innerHTML = '';
+
+        function type() {
+          if (i < text.length) {
+            btn.innerHTML = text.slice(0, i + 1) + '<span class="cursor">_</span>';
+            i++;
+            setTimeout(type, 80);
+          } else {
+            btn.innerHTML = text;
+            isTyping = false;
+            if (callback) callback();
+          }
+        }
+        type();
+      }
+
+      // Button click handlers
+      function startGame() {
+        if (!gameActive) {
+          gameActive = true;
+          gameLayer.style.display = 'block';
+          exitBtn.style.display = 'block';
+          document.getElementById('controls').style.display = 'block';
+          document.getElementById('desktopLegend').style.display = window.innerWidth > 1200 ? 'block' : 'none';
+          if (window.startGame) {
+            window.startGame();
+          }
+        }
+      }
+
+      if (btn) {
+        btn.addEventListener('click', () => {
+          if (!gameActive) {
+            typeText('DRIVES...', () => {
+              setTimeout(startGame, 1000);
+            });
+          }
+        });
+      }
+
+      if (mobileBtn) {
+        mobileBtn.addEventListener('click', startGame);
+      }
+
+
+      // Mobile button handlers
+      window.mobileBoostPressed = false;
+      window.mobileBrakePressed = false;
+      
+      const boostBtn = document.getElementById('btnBoost');
+      const brakeBtn = document.getElementById('btnBrake');
+      
+      if (boostBtn) {
+        boostBtn.addEventListener('click', (e) => {
+          console.log('Boost clicked');
+        });
+        boostBtn.addEventListener('mousedown', (e) => {
+          console.log('Boost mousedown');
+          e.preventDefault();
+          window.mobileBoostPressed = true;
+        });
+        boostBtn.addEventListener('mouseup', (e) => {
+          console.log('Boost mouseup');
+          e.preventDefault();
+          window.mobileBoostPressed = false;
+        });
+      }
+      
+      if (brakeBtn) {
+        brakeBtn.addEventListener('click', (e) => {
+          console.log('Brake clicked');
+        });
+        brakeBtn.addEventListener('mousedown', (e) => {
+          console.log('Brake mousedown');
+          e.preventDefault();
+          window.mobileBrakePressed = true;
+        });
+        brakeBtn.addEventListener('mouseup', (e) => {
+          console.log('Brake mouseup');
+          e.preventDefault();
+          window.mobileBrakePressed = false;
+        });
+      }
+      
+      // Expose mobile button states
+      window.getMobileControls = () => ({
+        boost: window.mobileBoostPressed || false,
+        brake: window.mobileBrakePressed || false
+      });
+
+      // Exit game function
+      function exitGame() {
+        gameActive = false;
+        gameLayer.style.display = 'none';
+        exitBtn.style.display = 'none';
+        document.getElementById('controls').style.display = 'none';
+        document.getElementById('desktopLegend').style.display = 'none';
+        if (btn) typeText('clicks');
+      }
+
+      // Exit button handler
+      exitBtn.addEventListener('click', exitGame);
+
+      // ESC key handler
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && gameActive) {
+          exitGame();
+        }
+      });
+
+      // Initialize with typing effect
+      if (btn) {
+        setTimeout(() => typeText('clicks'), 500);
+
+        // Retype on hover
+        btn.addEventListener('mouseenter', () => {
+          if (!isTyping && !gameActive) {
+            typeText('clicks');
+          }
+        });
+      }
+    })();
+  </script>
+
+
+  <!-- SCRIPT #4 SECTIONS -->
+  <script>
+    const openBtn = document.getElementById("openContact");
+    const dialog = document.getElementById("contactDialog");
+    const form = document.getElementById("contactForm");
+
+    openBtn.addEventListener("click", () => {
+      if (typeof dialog.showModal === "function") dialog.showModal();
+      else alert("Your browser doesn’t support dialog. (Safari may need a polyfill.)");
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      // Replace this with your real action:
+      // 1) mailto: (simple), 2) Formspree, 3) Netlify Forms, 4) your backend endpoint.
+      console.log("Contact submission:", data);
+
+      // UX: close + reset
+      dialog.close();
+      form.reset();
+
+      // Optional: toast
+      alert("Sent! I’ll get back to you within THREE business days.");
+    });
+  </script>
+
+</body>
+</html>

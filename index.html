@@ -20,7 +20,7 @@
     }
     #gameCanvas { width: 100%; height: 100%; display: block; }
     #exitBtn {
-      position: absolute; top: 16px; right: 16px; z-index: 10000;
+      position: fixed !important; top: 16px !important; right: 16px !important; z-index: 99999 !important;
       padding: 10px 12px; border-radius: 8px; border: 1px solid #4a5568; background: #111827; color: #f9fafb; cursor: pointer;
     }
     /* Optional mobile controls (hidden by default) */
@@ -42,6 +42,22 @@
     }
     .ctrlBtn:active { transform: scale(0.98); }
     @media (prefers-reduced-motion: reduce) { .anim { animation: none !important; } }
+    #desktopLegend {
+      position: fixed; bottom: 24px; left: 24px; z-index: 10001;
+      background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px; padding: 16px; color: #f9fafb; font: 14px/1.4 system-ui;
+      display: none;
+    }
+    #desktopLegend h3 { margin: 0 0 8px 0; font-size: 16px; color: #00ff41; }
+    #desktopLegend div { margin: 4px 0; }
+    @media (min-width: 1201px) {
+      #controls { display: none !important; }
+    }
+    @media (max-width: 1200px) {
+      #desktopHero { display: none !important; }
+      #hero { display: none !important; }
+      .heroText { display: none !important; }
+    }
   </style>
 </head>
 
@@ -63,76 +79,481 @@
     </div>
   </div>
 
-  <!-- NAVIGATION SECTION-->
+  <!--(desktop) NAVIGATION -->
   <nav id="desktopNav">
-    <div class="logo">DNAYA WILSON.</div>
+    <div class="logo">DW</div>
     <div>
       <ul class="navLinks">
-        <li><a href="#about"> ABOUT</a></li>
-        <li><a href="#portfolio"> DEPLOYMENTS</a></li>
-        <li><a href="#contact"> CONTACT</a></li>
-
-          <!-- GAMING BUTTON -->
-      <div class="btnContainer">
-        <button id="gameToggle" aria-pressed="false" aria-controls="gameLayer">Developer Lens</button>
-      </div>
+        <li><a href="#about">Who I Am</a></li>
+        <li><a href="#deployments">What I Build</a></li>
+        <li><a href="#contact">What's Next</a></li>
       </ul>
     </div>
+
+    <button id="modeToggle" class="mode-toggle" type="button" aria-pressed="false">
+      Developer Mode
+    </button>
   </nav>
 
+  <!-- (mobile) HERO -->
   <nav id="hamburgerNav">
-    <div class="logo">DNAYA WILSON.</div>
+    <div class="mobileLogo">DW</div>
     <div class="hamburgerMenu">
       <div class="hamburgerIcon" onclick="toggleMenu()">
         <span></span><span></span><span></span>
       </div>
       <div class="menuItems">
-        <li><a href="#about" onclick="toggleMenu()">ABOUT</a></li>
-        <li><a href="#portfolio" onclick="toggleMenu()">DEPLOYMENTS</a></li>
-        <li><a href="#contact" onclick="toggleMenu()">CONTACT</a></li>
+        <li><a href="#about" onclick="toggleMenu()">Who I Am</a></li>
+        <li><a href="#deployments" onclick="toggleMenu()">What I Build</a></li>
+        <li><a href="#contact" onclick="toggleMenu()">What's Next</a></li>
       </div>
     </div>
   </nav>
 
-  <!-- MAIN SECTION -->
-  <div id="website-content">
-    <section id="profile">
-      <div class="sectionText">
-        <h1 class="sectionTitle1">coder</h1>
-        <p class="sectionP1">code that <button>clicks.</button></p>
+  <!-- (desktop) HERO -->
+  <div id="desktopHero">
+    <section id="hero">
+      <div class="heroText">
+        <h1 class="heroTitle">coder</h1>
+        <p class="heroP">code that <button id="gameToggle">clicks.</button></p>
       </div>
-  
-      <div class="sectionText">
-        <h1 class="sectionTitle2">creator</h1>
-        <p class="sectionP2">designs that captivate.</p>
+
+      <div class="heroText">
+        <h1 class="heroTitle2">creator</h1>
+        <p class="heroP2">designs that captivate.</p>
       </div>
     </section>
-    
-    <section id="mobileProfile">
-      <div class="mobile-header">
-        <h1 class="mobile-title">DNAYA <span class="wilson">WILSON</span></h1>
-        <h2 class="mobile-subtitle">Creative Developer</h2>
-        <p class="mobile-p">creator === <button>coder</button> 
-        </p> 
-      </div>
-    </section>    
   </div>
+
+  <!-- (mobile) HERO -->
+  <div id="mobileHero">
+    <section>
+      <div class="mobileHeader">
+        <h1 class="mobileTitle">DNAYA <span class="wilson">WILSON</span></h1>
+        <h2 class="mobileSubtitle">Creative Developer</h2>
+        <p class="mobileP">creator === <button id="mobileGameToggle">coder</button>
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <!-- WALKER DIVIDER 0: FRONTEND -->
+  <div class="walker-divider" id="walkerDivider0">
+    <span class="wd-skill" data-skill="HTML">HTML</span>
+    <span class="wd-skill" data-skill="JavaScript">JavaScript</span>
+    <span class="wd-skill" data-skill="Angular">Angular</span>
+    <span class="wd-skill" data-skill="TypeScript">TypeScript</span>
+    <span class="wd-skill" data-skill="CSS">CSS</span>
+    <div class="wd-walker" id="wdWalker0">
+      <svg viewBox="0 0 64 64" width="52" height="52" stroke="white" stroke-width="3" fill="none">
+        <g class="wd-body">
+          <circle cx="32" cy="10" r="6"/>
+          <line x1="32" y1="16" x2="32" y2="28"/>
+          <path d="M 32 28 L 26 34 L 38 34 Z" fill="white" stroke="white" stroke-width="2"/>
+          <line class="wd-arm-l" x1="32" y1="20" x2="22" y2="30"/>
+          <line class="wd-arm-r" x1="32" y1="20" x2="42" y2="30"/>
+          <g><rect x="40" y="30" width="7" height="6" rx="1.5" fill="none" stroke="white" stroke-width="2"/>
+          <path d="M 41.5 30 Q 43.5 27, 45.5 30" stroke="white" stroke-width="2" fill="none"/></g>
+          <line class="wd-leg-l" x1="32" y1="34" x2="28" y2="50"/>
+          <line class="wd-leg-r" x1="32" y1="34" x2="36" y2="50"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
   
-   <!-- ABOUT SECTION -->
+  <!-- SKILL RAIL (desktop) -->
+  <div class="skill-rail-wrap" #desktopRail>
 
-   <!-- DEPLOYMENT SECTION -->
+    <div class="skill-rail">
+      <span class="skill-item">HTML</span>
+      <span class="skill-item">CSS</span>
+      <span class="skill-item">JavaScript</span>
+      <span class="skill-item">TypeScript</span>
+      <span class="skill-item">Angular</span>
+      <span class="skill-item">Three.js</span>
+      <span class="skill-item">Motion</span>
+    </div>
 
-   <!-- CONTACT SECTION -->
+      <!-- STICK WOMAN -->
+      <div class="walker" id="walker" style="left: 5%;">
+
+        <svg viewBox="0 0 64 64" width="64" height="64" stroke="white" stroke-width="3" fill="none">
+          <g id="walkerBody">
+            <!-- head -->
+            <circle id="walkerHead" cx="32" cy="10" r="6"/>
+
+            <!-- body -->
+            <line id="walkerTorso" x1="32" y1="16" x2="32" y2="28"/>
+            
+            <!-- dress/skirt (triangle shape) -->
+            <path d="M 32 28 L 26 34 L 38 34 Z" fill="white" stroke="white" stroke-width="2"/>
+
+            <!-- arms -->
+            <line class="arm-left" x1="32" y1="20" x2="22" y2="30"/>
+            <line class="arm-right" id="arm-right" x1="32" y1="20" x2="42" y2="30"/>
+            
+            <!-- handbag on right arm (rounded rectangle with handle) -->
+            <g id="handbag">
+              <rect x="40" y="30" width="7" height="6" rx="1.5" fill="none" stroke="white" stroke-width="2"/>
+              <path d="M 41.5 30 Q 43.5 27, 45.5 30" stroke="white" stroke-width="2" fill="none"/>
+            </g>
+
+            <!-- legs - will animate to step forward/back -->
+            <line class="leg-left" x1="32" y1="34" x2="28" y2="50"/>
+            <line class="leg-right" x1="32" y1="34" x2="36" y2="50"/>
+          </g>
+        </svg>
+
+      </div>
+
+  </div>
+
+
+  <!-- ALL SECTIONS -->
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="section-inner">
+        <div class="section-title">
+          <h2>Who I Am</h2>
+        </div>
+
+        <div class="resume-layout">
+
+          <!-- LEFT: Experience -->
+          <div class="resume-left">
+            <h3 class="resume-intro-title">Creative Developer</h3>
+            <h4 class="resume-intro-sub">Design. Develop. Deliver.</h4>
+            <p class="resume-intro-p">I build interactive experiences at the intersection of design and development, where creativity leads and code follows through.</p>
+
+            <div class="resume-block">
+              <h3 class="resume-block-title">Experience</h3>
+              <div class="resume-timeline">
+
+                <div class="resume-item">
+                  <div class="resume-item-header">
+                    <span class="resume-role">Associate Software Developer</span>
+                    <span class="resume-date">Mar 2023 – Present</span>
+                  </div>
+                  <ul class="resume-bullets">
+                    <li>Deliver production-ready features for an enterprise fuel management system, including notifications and reusable UI components</li>
+                    <li>Engineer frontend functionality using Angular, TypeScript, HTML, and CSS within a large-scale application</li>
+                    <li>Connect frontend features to backend services through REST APIs to support real-time workflows</li>
+                    <li>Design and execute SQL queries that power application features, system events, and reporting</li>
+                    <li>Drive work across Agile sprints by owning backlog items and collaborating with cross-functional teams</li>
+                  </ul>
+                  <div class="resume-item-tags">
+                    <span>Angular</span><span>TypeScript</span><span>SQL</span><span>Agile</span>
+                  </div>
+                </div>
+
+                <div class="resume-item">
+                  <div class="resume-item-header">
+                    <span class="resume-role">Associate Data Analyst</span>
+                    <span class="resume-date">Jan 2022 – Mar 2023</span>
+                  </div>
+                  <ul class="resume-bullets">
+                    <li>Managed large datasets utilizing SQL to identify opportunities and understand performance</li>
+                    <li>Produced Workflows, Mappings, Sessions, Tasks, and Transformations for the ETL team</li>
+                    <li>Created, executed, and documented unit test plans for ETL and data integration processes</li>
+                    <li>Developed and maintained Linux shell scripts</li>
+                  </ul>
+                  <div class="resume-item-tags">
+                    <span>SQL</span><span>ETL</span><span>Linux</span><span>Data Analysis</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Skills + Education -->
+          <div class="resume-right">
+
+            <div class="resume-block">
+              <h3 class="resume-block-title">Skills</h3>
+              <div class="skills-grid">
+                <div class="skill-category">
+                  <h4>Languages</h4>
+                  <div class="skill-tags">
+                    <span>JavaScript</span><span>TypeScript</span><span>HTML</span><span>CSS</span><span>Java</span><span>PHP</span>
+                  </div>
+                </div>
+                <div class="skill-category">
+                  <h4>Frameworks</h4>
+                  <div class="skill-tags">
+                    <span>Angular</span><span>Bootstrap</span><span>Node.js</span><span>Three.js</span>
+                  </div>
+                </div>
+                <div class="skill-category">
+                  <h4>Database</h4>
+                  <div class="skill-tags">
+                    <span>MySQL</span><span>MS SQL Server</span><span>Oracle</span><span>SAP HANA</span>
+                  </div>
+                </div>
+                <div class="skill-category">
+                  <h4>Cloud & DevOps</h4>
+                  <div class="skill-tags">
+                    <span>AWS EC2</span><span>Google Cloud</span><span>GitHub</span><span>CI/CD</span><span>Linux</span>
+                  </div>
+                </div>
+                <div class="skill-category">
+                  <h4>Creative</h4>
+                  <div class="skill-tags">
+                    <span>Photoshop</span><span>Illustrator</span><span>Motion Design</span><span>Figma</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="resume-block">
+              <h3 class="resume-block-title">Education</h3>
+              <div class="resume-edu">
+                <span class="resume-role">B.S. Information Technology</span>
+                <span class="resume-edu-minor">Minor in Information Systems</span>
+                <span class="resume-date">Georgia Southern University · Statesboro, GA</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WALKER DIVIDER 1: BACKEND -->
+    <div class="walker-divider" id="walkerDivider1">
+      <span class="wd-skill" data-skill="SQL">SQL</span>
+      <span class="wd-skill" data-skill="REST APIs">REST APIs</span>
+      <span class="wd-skill" data-skill="Node.js">Node.js</span>
+      <span class="wd-skill" data-skill="Linux">Linux</span>
+      <span class="wd-skill" data-skill="CI/CD">CI/CD</span>
+      <div class="wd-walker" id="wdWalker1">
+        <svg viewBox="0 0 64 64" width="52" height="52" stroke="white" stroke-width="3" fill="none">
+          <g class="wd-body">
+            <circle cx="32" cy="10" r="6"/>
+            <line x1="32" y1="16" x2="32" y2="28"/>
+            <path d="M 32 28 L 26 34 L 38 34 Z" fill="white" stroke="white" stroke-width="2"/>
+            <line class="wd-arm-l" x1="32" y1="20" x2="22" y2="30"/>
+            <line class="wd-arm-r" x1="32" y1="20" x2="42" y2="30"/>
+            <g><rect x="40" y="30" width="7" height="6" rx="1.5" fill="none" stroke="white" stroke-width="2"/>
+            <path d="M 41.5 30 Q 43.5 27, 45.5 30" stroke="white" stroke-width="2" fill="none"/></g>
+            <line class="wd-leg-l" x1="32" y1="34" x2="28" y2="50"/>
+            <line class="wd-leg-r" x1="32" y1="34" x2="36" y2="50"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <section id="deployments">
+      <div class="section-inner">
+        <div class="section-title">
+          <h2>What I Build</h2>
+        </div>
+
+        <div class="projects-grid">
+          <div class="project-card">
+            <div class="project-header">
+              <h3>Interactive Portfolio</h3>
+              <span class="project-year">2026</span>
+            </div>
+            <p class="project-desc">This site. Architected a custom interactive frontend with game-inspired interactions, 3D elements, animation, and a walking stick figure that follows your mouse.</p>
+            <div class="project-tech">
+              <span>JavaScript</span>
+              <span>Three.js</span>
+              <span>CSS</span>
+              <span>Motion Design</span>
+            </div>
+            <div class="project-links">
+              <a href="#" class="project-link">View</a>
+              <!-- <a href="#" class="project-link">Source Code</a> -->
+            </div>
+          </div>
+
+          <div class="project-card">
+            <div class="project-header">
+              <h3>Digital Illustration</h3>
+              <span class="project-year">2025</span>
+            </div>
+            <p class="project-desc">Converted pencil sketches into digital assets using Photoshop. Created a half-illustrated, half-photographic self-portrait blending pastel textures, custom brushes, and hand-drawn art into digital interfaces.</p>
+            <div class="project-tech">
+              <span>Adobe Photoshop</span>
+              <span>Adobe Illustrator</span>
+              <span>Mixed Media</span>
+            </div>
+            <div class="project-links">
+              <a href="https://dnayawilson23.myportfolio.com/" class="project-link">View</a>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <div class="project-header">
+              <h3>3D Car Racing Game</h3>
+              <span class="project-year">2025</span>
+            </div>
+            <p class="project-desc">Browser-based racing game built with Three.js. Features realistic physics, dynamic camera angles, and mobile controls.</p>
+            <div class="project-tech">
+              <span>Three.js</span>
+              <span>WebGL</span>
+              <span>Game Physics</span>
+            </div>
+            <div class="project-links">
+              <a href="#" class="project-link" onclick="window.innerWidth <= 1200 ? document.getElementById('mobileGameToggle').click() : document.getElementById('gameToggle').click(); return false;">Play Game</a>
+              <!-- <a href="#" class="project-link">Source Code</a> -->
+            </div>
+          </div>
+
+          <div class="project-card">
+            <div class="project-header">
+              <h3>Cloud Calculator</h3>
+              <span class="project-year">2020</span>
+            </div>
+            <p class="project-desc">Deployed a production application on a Google Cloud virtual machine, configured DNS records, exposed it via a custom subdomain, and maintained uptime across instance restarts.</p>
+            <div class="project-tech">
+              <span>Google Cloud</span>
+              <span>Linux</span>
+              <span>DNS</span>
+              <span>Ubuntu</span>
+            </div>
+            <div class="project-links">
+              <a href="http://calculator.dnayadnaya.com" class="project-link">View</a>
+              <!-- <a href="#" class="project-link">Source Code</a> -->
+            </div>
+          </div>
+        </div>
+
+        </div>
+    </section>
+
+    <!-- WALKER DIVIDER 2: CREATIVE -->
+    <div class="walker-divider" id="walkerDivider2">
+      <span class="wd-skill" data-skill="Three.js">Three.js</span>
+      <span class="wd-skill" data-skill="Motion">Motion</span>
+      <span class="wd-skill" data-skill="Photoshop">Photoshop</span>
+      <span class="wd-skill" data-skill="UI/UX">UI/UX</span>
+      <span class="wd-skill" data-skill="Illustrator">Illustrator</span>
+      <div class="wd-walker" id="wdWalker2">
+        <svg viewBox="0 0 64 64" width="52" height="52" stroke="white" stroke-width="3" fill="none">
+          <g class="wd-body">
+            <circle cx="32" cy="10" r="6"/>
+            <line x1="32" y1="16" x2="32" y2="28"/>
+            <path d="M 32 28 L 26 34 L 38 34 Z" fill="white" stroke="white" stroke-width="2"/>
+            <line class="wd-arm-l" x1="32" y1="20" x2="22" y2="30"/>
+            <line class="wd-arm-r" x1="32" y1="20" x2="42" y2="30"/>
+            <g><rect x="40" y="30" width="7" height="6" rx="1.5" fill="none" stroke="white" stroke-width="2"/>
+            <path d="M 41.5 30 Q 43.5 27, 45.5 30" stroke="white" stroke-width="2" fill="none"/></g>
+            <line class="wd-leg-l" x1="32" y1="34" x2="28" y2="50"/>
+            <line class="wd-leg-r" x1="32" y1="34" x2="36" y2="50"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact">
+      <div class="section-inner">
+        <div class="section-title">
+          <h2>What's Next</h2>
+        </div>
+        <div class="contact-content">
+          <div class="contact-info">
+            <h3>Ready to create something amazing?</h3>
+            <p>I'm always interested in new opportunities and creative collaborations. Whether you have a project in mind or just want to chat about web development, I'd love to hear from you.</p>
+            
+            <div class="contact-methods">
+              <div class="contact-method">
+                <span class="method-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.337-.027-3.063-1.867-3.063-1.869 0-2.156 1.459-2.156 2.967v5.7h-3v-10h2.881v1.367h.041c.401-.761 1.381-1.563 2.844-1.563 3.042 0 3.604 2.002 3.604 4.604v5.592z"/>
+                  </svg>
+                </span>
+                <a href="https://www.linkedin.com/in/dnayawilson/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+              </div>
+              <div class="contact-method">
+                <span class="method-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.49a.42.42 0 0 1 .11-.18.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51 1.22 3.78a.84.84 0 0 1-.3.94z"/>
+                  </svg>
+                </span>
+                <a href="https://github.com/nayaw1" target="_blank" rel="noopener noreferrer">GitHub</a>
+              </div>
+            </div>
+          </div>
+          
+          <button class="cta-button" id="openContact">
+            <span>Connect</span>
+            <span class="button-arrow">→</span>
+          </button>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- Connect With Me Modal -->
+    <dialog id="contactDialog" aria-labelledby="contactTitle">
+      <form class="modal" id="contactForm" method="dialog">
+        <div class="modal-head">
+          <div>
+            <h3 id="contactTitle">Send a message</h3>
+            <small>Fields marked * are required.</small>
+          </div>
+          <button class="btn" type="button" aria-label="Close dialog" onclick="document.getElementById('contactDialog').close()">✕</button>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="firstName">First name *</label>
+            <input id="firstName" name="firstName" autocomplete="given-name" />
+          </div>
+          <div class="field">
+            <label for="lastName">Last name *</label>
+            <input id="lastName" name="lastName" autocomplete="family-name" />
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" autocomplete="tel" inputmode="tel" />
+          </div>
+          <div class="field">
+            <label for="email">Email *</label>
+            <input id="email" name="email" type="email" autocomplete="email" />
+          </div>
+          <div class="field full">
+            <label for="message">Brief message *</label>
+            <textarea id="message" name="message"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn" type="button" onclick="document.getElementById('contactDialog').close()">Cancel</button>
+          <button class="btn primary" id="submitBtn" value="submit">Send</button>
+        </div>
+      </form>
+    </dialog>
+  </div>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Copyright &#169; 2025 DNAYA WILSON. All Rights Reserved.</p>
+  </footer>
 
   <!-- GAME OVERLAY SECTION -->
+  <button id="exitBtn" style="display: none;">Exit Game</button>
+  <div id="desktopLegend">
+    <h3>Controls</h3>
+    <div>WASD - Move</div>
+    <div>Space - Boost</div>
+    <div>Shift - Brake</div>
+    <div>ESC - Exit</div>
+  </div>
   <div id="gameLayer" role="dialog" aria-modal="true" aria-label="Game Mode">
-    <button id="exitBtn">Exit Game</button>
-
     <div id="controls" aria-hidden="true">
-      <div id="leftJoy" class="joystick" aria-label="Steering joystick"><div class="stick"></div></div>
+      <div id="leftJoy" class="joystick" aria-label="Steering joystick">
+        <div class="stick"></div>
+      </div>
       <div id="rightButtons">
-        <button id="btnBoost" class="ctrlBtn" aria-label="Boost">Boost</button>
         <button id="btnBrake" class="ctrlBtn" aria-label="Brake">Brake</button>
+        <button id="btnBoost" class="ctrlBtn" aria-label="Boost">Boost</button>
       </div>
     </div>
     <canvas id="gameCanvas"></canvas>
@@ -156,79 +577,82 @@
   <!-- SCRIPT #3-->
   <script>
     // Terminal Typing Effect & Game Loading
-    (function() {
+    (function () {
       const btn = document.getElementById('gameToggle');
+      const mobileBtn = document.getElementById('mobileGameToggle');
       const gameLayer = document.getElementById('gameLayer');
       const exitBtn = document.getElementById('exitBtn');
       let isTyping = false;
       let gameActive = false;
-      
-      // Create particle canvas
-      const canvas = document.createElement('canvas');
-      canvas.id = 'particleCanvas';
-      canvas.width = 200;
-      canvas.height = 50;
-      btn.appendChild(canvas);
-      
-      const ctx = canvas.getContext('2d');
-      const particles = [];
-      
-      // Particle class
-      class Particle {
-        constructor() {
-          this.reset();
+
+      // Create particle canvas for desktop button
+      if (btn) {
+        const canvas = document.createElement('canvas');
+        canvas.id = 'particleCanvas';
+        canvas.width = 200;
+        canvas.height = 50;
+        btn.appendChild(canvas);
+
+        const ctx = canvas.getContext('2d');
+        const particles = [];
+
+        // Particle class
+        class Particle {
+          constructor() {
+            this.reset();
+          }
+
+          reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + 5;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = -Math.random() * 2 - 1;
+            this.life = 1;
+            this.decay = Math.random() * 0.02 + 0.01;
+          }
+
+          update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.life -= this.decay;
+
+            if (this.life <= 0) this.reset();
+          }
+
+          draw() {
+            ctx.save();
+            ctx.globalAlpha = this.life * 0.8;
+            ctx.fillStyle = '#00ff41';
+            ctx.fillRect(this.x, this.y, 1, 1);
+            ctx.restore();
+          }
         }
-        
-        reset() {
-          this.x = Math.random() * canvas.width;
-          this.y = canvas.height + 5;
-          this.vx = (Math.random() - 0.5) * 0.5;
-          this.vy = -Math.random() * 2 - 1;
-          this.life = 1;
-          this.decay = Math.random() * 0.02 + 0.01;
+
+        // Initialize particles
+        for (let i = 0; i < 15; i++) {
+          particles.push(new Particle());
         }
-        
-        update() {
-          this.x += this.vx;
-          this.y += this.vy;
-          this.life -= this.decay;
-          
-          if (this.life <= 0) this.reset();
+
+        // Animate particles
+        function animateParticles() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach(p => {
+            p.update();
+            p.draw();
+          });
+          requestAnimationFrame(animateParticles);
         }
-        
-        draw() {
-          ctx.save();
-          ctx.globalAlpha = this.life * 0.8;
-          ctx.fillStyle = '#00ff41';
-          ctx.fillRect(this.x, this.y, 1, 1);
-          ctx.restore();
-        }
+        animateParticles();
       }
-      
-      // Initialize particles
-      for (let i = 0; i < 15; i++) {
-        particles.push(new Particle());
-      }
-      
-      // Animate particles
-      function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-          p.update();
-          p.draw();
-        });
-        requestAnimationFrame(animateParticles);
-      }
-      animateParticles();
-      
+
       // Terminal typing effect
       function typeText(text, callback) {
         if (isTyping) return;
         isTyping = true;
-        
+
         let i = 0;
         btn.innerHTML = '';
-        
+
         function type() {
           if (i < text.length) {
             btn.innerHTML = text.slice(0, i + 1) + '<span class="cursor">_</span>';
@@ -242,53 +666,426 @@
         }
         type();
       }
-      
-      // Button click handler
-btn.addEventListener('click', () => {
-  if (!gameActive) {
-    typeText('DEV MODE: ON', () => {
-      setTimeout(() => {
-        gameActive = true;
-        gameLayer.style.display = 'block';
-        // Start the game
-        if (window.startGame) {
-          window.startGame();
-        }
-      }, 1000);
-    });
-  }
-});
 
+      // Button click handlers
+      function startGame() {
+        if (!gameActive) {
+          gameActive = true;
+          gameLayer.style.display = 'block';
+          exitBtn.style.display = 'block';
+          document.getElementById('controls').style.display = 'block';
+          document.getElementById('desktopLegend').style.display = window.innerWidth > 1200 ? 'block' : 'none';
+          if (window.startGame) {
+            window.startGame();
+          }
+        }
+      }
+
+      if (btn) {
+        btn.addEventListener('click', () => {
+          if (!gameActive) {
+            typeText('DRIVES...', () => {
+              setTimeout(startGame, 1000);
+            });
+          }
+        });
+      }
+
+      if (mobileBtn) {
+        mobileBtn.addEventListener('click', startGame);
+      }
+
+
+      // Mobile button handlers
+      window.mobileBoostPressed = false;
+      window.mobileBrakePressed = false;
       
+      const boostBtn = document.getElementById('btnBoost');
+      const brakeBtn = document.getElementById('btnBrake');
+      
+      if (boostBtn) {
+        boostBtn.addEventListener('click', (e) => {
+          console.log('Boost clicked');
+        });
+        boostBtn.addEventListener('mousedown', (e) => {
+          console.log('Boost mousedown');
+          e.preventDefault();
+          window.mobileBoostPressed = true;
+        });
+        boostBtn.addEventListener('mouseup', (e) => {
+          console.log('Boost mouseup');
+          e.preventDefault();
+          window.mobileBoostPressed = false;
+        });
+      }
+      
+      if (brakeBtn) {
+        brakeBtn.addEventListener('click', (e) => {
+          console.log('Brake clicked');
+        });
+        brakeBtn.addEventListener('mousedown', (e) => {
+          console.log('Brake mousedown');
+          e.preventDefault();
+          window.mobileBrakePressed = true;
+        });
+        brakeBtn.addEventListener('mouseup', (e) => {
+          console.log('Brake mouseup');
+          e.preventDefault();
+          window.mobileBrakePressed = false;
+        });
+      }
+      
+      // Expose mobile button states
+      window.getMobileControls = () => ({
+        boost: window.mobileBoostPressed || false,
+        brake: window.mobileBrakePressed || false
+      });
+
       // Exit game function
       function exitGame() {
         gameActive = false;
         gameLayer.style.display = 'none';
-        typeText('DEV MODE: OFF');
+        exitBtn.style.display = 'none';
+        document.getElementById('controls').style.display = 'none';
+        document.getElementById('desktopLegend').style.display = 'none';
+        if (btn) typeText('clicks');
       }
-      
+
       // Exit button handler
       exitBtn.addEventListener('click', exitGame);
-      
+
       // ESC key handler
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && gameActive) {
           exitGame();
         }
       });
-      
+
       // Initialize with typing effect
-      setTimeout(() => typeText('DEV MODE: OFF'), 500);
-      
-      // Retype on hover
-      btn.addEventListener('mouseenter', () => {
-        if (!isTyping && !gameActive) {
-          typeText('DEV MODE: OFF');
+      if (btn) {
+        setTimeout(() => typeText('clicks'), 500);
+
+        // Retype on hover
+        btn.addEventListener('mouseenter', () => {
+          if (!isTyping && !gameActive) {
+            typeText('clicks');
+          }
+        });
+      }
+    })();
+  </script>
+
+
+  <!-- SCRIPT #4 SECTIONS -->
+  <script>
+    const openBtn = document.getElementById("openContact");
+    const dialog = document.getElementById("contactDialog");
+    const form = document.getElementById("contactForm");
+
+    openBtn.addEventListener("click", () => {
+      if (typeof dialog.showModal === "function") dialog.showModal();
+      else alert("Your browser doesn't support dialog.");
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const fields = [
+        document.getElementById("firstName"),
+        document.getElementById("lastName"),
+        document.getElementById("email"),
+        document.getElementById("message"),
+      ];
+
+      let valid = true;
+      fields.forEach(f => {
+        f.classList.remove("error");
+        if (!f.value.trim()) { f.classList.add("error"); valid = false; }
+      });
+
+      const email = document.getElementById("email");
+      if (email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+        email.classList.add("error");
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      fetch("https://formspree.io/f/xvzvbvnk", {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: new FormData(form)
+      })
+      .then(res => {
+        if (res.ok) {
+          dialog.close();
+          form.reset();
+          alert("Sent! I'll get back to you within THREE business days.");
+        } else {
+          alert("Something went wrong. Please try again.");
         }
+      })
+      .catch(() => alert("Something went wrong. Please try again."));
+    });
+  </script>
+
+  <!-- SCRIPT #5 SKILL RAIL WALKER -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const skillRailWrap = document.querySelector('.skill-rail-wrap');
+      const walker = document.getElementById('walker');
+      const skillItems = document.querySelectorAll('.skill-item');
+      const legLeft = walker.querySelector('.leg-left');
+      const legRight = walker.querySelector('.leg-right');
+      const armLeft = walker.querySelector('.arm-left');
+      const armRight = walker.querySelector('.arm-right');
+      const walkerBody = walker.querySelector('#walkerBody');
+      const walkerHead = walker.querySelector('#walkerHead');
+      const walkerTorso = walker.querySelector('#walkerTorso');
+      const handbag = walker.querySelector('#handbag');
+      
+      let lastX = 0;
+      let lastTime = Date.now();
+      let isMoving = false;
+      let moveTimeout;
+      let walkCycle = 0;
+      let walkSpeed = 0.15;
+
+      // Animate walking
+      function animateWalk() {
+        if (!isMoving) return;
+        
+        walkCycle += walkSpeed;
+        
+        // Enhanced leg swing with easing
+        const legSwing = Math.sin(walkCycle) * 12;
+        const legY = Math.abs(Math.sin(walkCycle)) * 2; // Lift leg slightly
+        
+        // Enhanced arm swing
+        const armSwing = Math.sin(walkCycle) * 6;
+        const armY = Math.sin(walkCycle * 2) * 1;
+        
+        // Body bob (vertical bounce)
+        const bodyBob = Math.abs(Math.sin(walkCycle * 2)) * 2;
+        walkerBody.style.transform = `translateY(${bodyBob}px)`;
+        
+        // Head tilt based on leg position
+        const headTilt = Math.sin(walkCycle) * 3;
+        walkerHead.style.transform = `rotate(${headTilt}deg)`;
+        walkerHead.style.transformOrigin = 'center';
+        
+        // Left leg steps forward/back with lift
+        legLeft.setAttribute('x2', 28 + legSwing);
+        legLeft.setAttribute('y2', 50 - legY);
+        
+        // Right leg steps opposite with lift
+        legRight.setAttribute('x2', 36 - legSwing);
+        legRight.setAttribute('y2', 50 - (2 - legY));
+        
+        // Arms swing opposite to legs with vertical motion
+        armLeft.setAttribute('x2', 22 - armSwing);
+        armLeft.setAttribute('y2', 30 + armY);
+        
+        const rightArmX = 42 + armSwing;
+        const rightArmY = 30 - armY;
+        armRight.setAttribute('x2', rightArmX);
+        armRight.setAttribute('y2', rightArmY);
+        
+        // Handbag follows right arm with slight swing
+        const bagSwing = Math.sin(walkCycle) * 3;
+        handbag.style.transform = `translate(${rightArmX - 42}px, ${rightArmY - 30}px) rotate(${bagSwing}deg)`;
+        handbag.style.transformOrigin = '43.5px 30px';
+        
+        requestAnimationFrame(animateWalk);
+      }
+
+      if (skillRailWrap && walker) {
+        skillRailWrap.addEventListener('mousemove', (e) => {
+          const rect = skillRailWrap.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const percentage = (x / rect.width) * 100;
+          
+          // Calculate speed based on mouse movement
+          const now = Date.now();
+          const deltaTime = now - lastTime;
+          const deltaX = Math.abs(x - lastX);
+          const speed = deltaX / (deltaTime || 1);
+          
+          // Adjust walk speed based on mouse speed
+          walkSpeed = Math.min(0.3, 0.1 + speed * 0.5);
+          
+          // Start walking animation
+          if (deltaX > 1) {
+            if (!isMoving) {
+              isMoving = true;
+              animateWalk();
+            }
+            
+            clearTimeout(moveTimeout);
+            moveTimeout = setTimeout(() => {
+              isMoving = false;
+              // Reset to standing position
+              legLeft.setAttribute('x2', 28);
+              legLeft.setAttribute('y2', 50);
+              legRight.setAttribute('x2', 36);
+              legRight.setAttribute('y2', 50);
+              armLeft.setAttribute('x2', 22);
+              armLeft.setAttribute('y2', 30);
+              armRight.setAttribute('x2', 42);
+              armRight.setAttribute('y2', 30);
+              handbag.style.transform = 'translate(0, 0) rotate(0deg)';
+              walkerBody.style.transform = 'translateY(0)';
+              walkerHead.style.transform = 'rotate(0deg)';
+            }, 150);
+          }
+          
+          lastX = x;
+          lastTime = now;
+          walker.style.left = percentage + '%';
+
+          // Highlight skill when walker is near
+          skillItems.forEach(item => {
+            const itemRect = item.getBoundingClientRect();
+            const itemCenter = itemRect.left + itemRect.width / 2;
+            const distance = Math.abs(e.clientX - itemCenter);
+            
+            if (distance < 60) {
+              item.classList.add('active');
+            } else {
+              item.classList.remove('active');
+            }
+          });
+        });
+
+        skillRailWrap.addEventListener('mouseleave', () => {
+          walker.style.left = '95%';
+          isMoving = false;
+          
+          const isCreator = document.documentElement.getAttribute('data-mode') === 'creator';
+
+          setTimeout(() => {
+            if (isCreator) {
+              // Creator pose: both arms raised up in a "ta-da!" / presenting gesture
+              legLeft.setAttribute('x2', '26');
+              legLeft.setAttribute('y2', '50');
+              legRight.setAttribute('x2', '38');
+              legRight.setAttribute('y2', '50');
+
+              armLeft.setAttribute('x2', '18');
+              armLeft.setAttribute('y2', '12');
+
+              armRight.setAttribute('x2', '46');
+              armRight.setAttribute('y2', '12');
+
+              handbag.style.transform = 'translate(-14px, -18px) rotate(-20deg)';
+              walkerBody.style.transform = 'translateY(0)';
+              walkerHead.style.transform = 'rotate(-8deg)';
+            } else {
+              // Default runway pose
+              legLeft.setAttribute('x2', '26');
+              legLeft.setAttribute('y2', '50');
+              legRight.setAttribute('x2', '38');
+              legRight.setAttribute('y2', '50');
+
+              armLeft.setAttribute('x2', '28');
+              armLeft.setAttribute('y2', '28');
+
+              armRight.setAttribute('x2', '38');
+              armRight.setAttribute('y2', '28');
+
+              handbag.style.transform = 'translate(-4px, -2px) rotate(5deg)';
+              walkerBody.style.transform = 'translateY(0)';
+              walkerHead.style.transform = 'rotate(5deg)';
+            }
+          }, 300);
+          
+          skillItems.forEach(item => item.classList.remove('active'));
+        });
+      }
+    });
+  </script>
+
+  <!-- SCRIPT #6 WALKER DIVIDERS -->
+  <script>
+    (function () {
+      const configs = [
+        { divider: document.getElementById('walkerDivider0'), walker: document.getElementById('wdWalker0') },
+        { divider: document.getElementById('walkerDivider1'), walker: document.getElementById('wdWalker1') },
+        { divider: document.getElementById('walkerDivider2'), walker: document.getElementById('wdWalker2') },
+      ];
+
+      configs.forEach(({ divider, walker }) => {
+        if (!divider || !walker) return;
+
+        const skills = Array.from(divider.querySelectorAll('.wd-skill'));
+        const legL = walker.querySelector('.wd-leg-l');
+        const legR = walker.querySelector('.wd-leg-r');
+        const armL = walker.querySelector('.wd-arm-l');
+        const armR = walker.querySelector('.wd-arm-r');
+        let walkCycle = 0;
+        let lastX = -60;
+
+        // position skills evenly, centered on their slot
+        function positionSkills() {
+          const w = divider.offsetWidth;
+          const padding = 24;
+          const usable = w - padding * 2;
+          skills.forEach((s, i) => {
+            const pos = padding + Math.round((usable / (skills.length - 1)) * i);
+            s.style.left = pos + 'px';
+          });
+        }
+        positionSkills();
+        window.addEventListener('resize', positionSkills);
+
+        function animateLegs(moving) {
+          if (!moving) {
+            legL.setAttribute('x2', 28); legR.setAttribute('x2', 36);
+            armL.setAttribute('x2', 22); armR.setAttribute('x2', 42);
+            return;
+          }
+          walkCycle += 0.18;
+          const s = Math.sin(walkCycle) * 10;
+          legL.setAttribute('x2', 28 + s);
+          legR.setAttribute('x2', 36 - s);
+          armL.setAttribute('x2', 22 - s * 0.5);
+          armR.setAttribute('x2', 42 + s * 0.5);
+        }
+
+        function checkCollisions(x, goingRight) {
+          skills.forEach(skill => {
+            const sx = parseInt(skill.style.left);
+            if (Math.abs(x - sx) < 32) {
+              skill.classList.add('wd-collecting');
+            } else if (!goingRight && x < sx - 50) {
+              skill.classList.remove('wd-collecting');
+            }
+          });
+        }
+
+        function update() {
+          const rect = divider.getBoundingClientRect();
+          const vh = window.innerHeight;
+          const progress = Math.min(1, Math.max(0, (vh - rect.top) / (vh + rect.height)));
+          const w = divider.offsetWidth;
+          const targetX = -60 + progress * (w + 120);
+          const moving = Math.abs(targetX - lastX) > 0.3;
+          const goingRight = targetX >= lastX;
+
+          walker.style.left = targetX + 'px';
+          walker.style.transform = goingRight ? 'scaleX(1)' : 'scaleX(-1)';
+          animateLegs(moving);
+          checkCollisions(targetX + 26, goingRight);
+          lastX = targetX;
+        }
+
+        window.addEventListener('scroll', update, { passive: true });
+        update();
       });
     })();
-    </script>        
-    
+  </script>
 
 </body>
 </html>
